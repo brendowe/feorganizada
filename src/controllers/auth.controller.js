@@ -1,12 +1,20 @@
+import authService from '../services/authService.js';
+
 class authController {
-  function(req, res) {
+  async login(req, res) {
     try {
-        const {login, senha} = req.body;
-        const {url} = req.params;
+      const { url } = req.params;
+      const { login, senha } = req.body;
 
+      const token = await authService.login(url, login, senha);
+      return res.json({
+        message: `usuario ${login} logado com sucesso`,
+        token,
+      });
     } catch (error) {
-        console.error(error)
+      console.error(error);
     }
-
   }
 }
+
+export default new authController();

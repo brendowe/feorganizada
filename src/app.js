@@ -15,6 +15,10 @@ class App {
   routes() {
     this.server.use('/api', authRouter);
   }
+
+  exceptionHandler() {
+    this.server.use(errorMiddleware);
+  }
 }
 
 export default new App().server;
