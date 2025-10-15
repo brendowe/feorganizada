@@ -1,6 +1,6 @@
-import masterModel from '../models/masterModel';
-import admModel from '../models/admModel';
-import pool from '../config/db';
+import masterModel from '../models/masterModel.js';
+import admModel from '../models/admModel.js';
+import pool from '../config/db.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
@@ -13,11 +13,10 @@ const gerarJWT = (usuario) => {
 };
 
 class authService {
-  async authLogin(url, login, senha) {
+  async login(url, login, senha) {
     const connection = await pool.getConnection();
 
     try {
-      await connection.beginTransaction();
 
       const usuarioAdm = await admModel.buscarADM(login, url, connection);
       const usuarioMaster = await masterModel.buscarMaster(login, url, connection);
@@ -36,10 +35,12 @@ class authService {
       const token = gerarJWT(usuario);
       return token;
     } catch (error) {
-      await connection.rollback();
+        console.log(error)
       throw error;
     } finally {
       connection.release();
     }
   }
 }
+
+export default new authService();
