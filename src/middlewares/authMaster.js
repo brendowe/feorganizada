@@ -10,7 +10,7 @@ export default async function  authMaster(req, res, next) {
 
   if(!usuarioMaster) {
     connection.release();
-    res.status(400).json({
+   return res.status(400).json({
         message: 'Apenas usuários master são permitidos'
     })
   }

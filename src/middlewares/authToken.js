@@ -10,7 +10,7 @@ export default async function authToken(req, res, next) {
 
   if (!headers) {
     connection.release();
-    res.status(400).json({ message: 'Erro. Token não encontrado' });
+    return res.status(400).json({ message: 'Erro. Token não encontrado' });
   }
   const token = headers.split(' ')[1];
 
