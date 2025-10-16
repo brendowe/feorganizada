@@ -16,7 +16,7 @@ class igrejaModel {
         endereco.cidade,
         endereco.bairro,
         endereco.rua,
-        endereco.complemento
+        endereco.complemento,
       ]
     );
   }
@@ -35,6 +35,18 @@ class igrejaModel {
     );
 
     return urlVerificada.length > 0;
+  }
+
+  async igrejaId(url, connection) {
+    const [igrejaId] = await connection.query(
+      'SELECT id FROM igreja WHERE url = ?',
+      [url]
+    );
+    if (igrejaId.length > 0) {
+      return igrejaId[0].id;
+    }
+
+    return null;
   }
 }
 
