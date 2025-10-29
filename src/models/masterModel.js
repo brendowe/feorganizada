@@ -4,6 +4,8 @@ class masterModel {
       'INSERT INTO membros_master (login, senha, email, membros_id, igreja_id) VALUES (?, ?, ?, ?, ?)',
       [master.login, master.senha, master.email, membros_id, igreja_id]
     );
+
+    return masterCadastro.insertId;
   }
 
   async verificarMaster(email, connection) {
