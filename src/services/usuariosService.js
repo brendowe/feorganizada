@@ -39,6 +39,38 @@ class usuarios {
       connection.release();
     }
   }
+
+  async buscarMembros(url) {
+    const connection = await pool.getConnection();
+
+    try {
+      await connection.beginTransaction();
+      const membros = await membrosModel.buscarMembros(url, connection);
+
+      return membros;
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
+  }
+
+  async buscarMembro(url, id) {
+    const connection = await pool.getConnection();
+
+    try {
+      await connection.beginTransaction();
+      const membro = await membrosModel.buscarMembro(url, id, connection);
+
+      return membro;
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
+  }
 }
 
 export default new usuarios();

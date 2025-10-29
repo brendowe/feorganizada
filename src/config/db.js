@@ -10,10 +10,10 @@ const pool = mysql.createPool({
   user: user,
   password: password,
   database: database,
+  dateStrings: true,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
 });
 
 export default pool;
-

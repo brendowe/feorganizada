@@ -27,6 +27,20 @@ class membrosModel {
       [telefone, membros_id]
     );
   }
+
+  async buscarMembros(url, connection) {
+    const [membros] = await connection.query('SELECT m.id, m.nome, m.nascimento,    i.nome AS nomeIgreja,    i.url FROM membros m   JOIN igreja i ON i.id = m.igreja_id WHERE  url = ?', [url]);
+
+    return membros;
+  }
+
+   async buscarMembro(url, id, connection) {
+    const [membro] = await connection.query('SELECT m.id, m.nome, m.nascimento,    i.nome AS nomeIgreja,    i.url FROM membros m   JOIN igreja i ON i.id = m.igreja_id WHERE  url = ? AND m.id = ?', [url, id]);
+
+    return membro;
+  }
+
+
 }
 
 export default new membrosModel();

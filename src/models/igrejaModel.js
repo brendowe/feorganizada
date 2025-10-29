@@ -26,7 +26,21 @@ class igrejaModel {
       'INSERT INTO igreja_telefone (igreja_id, telefone) VALUES (?, ?)',
       [igreja_id, telefoneIgreja]
     );
+
+    return telefoneCadastro.insertId;
   }
+
+
+
+
+
+
+
+
+
+
+
+
 
   async verificarIgreja(url, connection) {
     const [urlVerificada] = await connection.query(
@@ -36,6 +50,9 @@ class igrejaModel {
 
     return urlVerificada.length > 0;
   }
+
+
+
 
   async igrejaId(url, connection) {
     const [igrejaId] = await connection.query(
