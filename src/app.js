@@ -1,6 +1,7 @@
 import express from 'express';
 import authRouter from './routes/auth.routes.js';
 import usuariosRouter from './routes/usuarios.routes.js';
+import masterRouter from './routes/master.routes.js';
 
 class App {
   constructor() {
@@ -16,6 +17,7 @@ class App {
   routes() {
     this.server.use('/api', authRouter);
     this.server.use('/api', usuariosRouter);
+    this.server.use('/api', masterRouter);
   }
 
   exceptionHandler() {

@@ -19,6 +19,8 @@ class igrejaModel {
         endereco.complemento,
       ]
     );
+
+    return enderecoCadastro.insertId;
   }
 
   async cadastrarTelefone(igreja_id, telefoneIgreja, connection) {
@@ -30,18 +32,6 @@ class igrejaModel {
     return telefoneCadastro.insertId;
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
   async verificarIgreja(url, connection) {
     const [urlVerificada] = await connection.query(
       'SELECT * FROM igreja WHERE url = ?',
@@ -50,9 +40,6 @@ class igrejaModel {
 
     return urlVerificada.length > 0;
   }
-
-
-
 
   async igrejaId(url, connection) {
     const [igrejaId] = await connection.query(

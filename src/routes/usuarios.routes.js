@@ -7,5 +7,6 @@ const usuariosRouter = new Router();
 usuariosRouter.post('/:url/membros', authToken, usuariosController.cadastrarMembro);
 usuariosRouter.get('/:url/membros', authToken, usuariosController.buscarMembros);
 usuariosRouter.get('/:url/membros/:id', authToken, usuariosController.buscarMembro);
+usuariosRouter.get('/:url/aniversariantes/:mes', authToken, usuariosController.buscarAniversariantes);
 
 export default usuariosRouter;

@@ -1,6 +1,72 @@
 import igrejaModel from '../../src/models/igrejaModel.js';
 
 describe('Testes do igrejaModel', () => {
+  describe('Testes do igrejaModel.cadastrarIgreja', () => {
+    test('Deve retornar o id da Igreja cadastrada', async () => {
+      const mockIgreja = {
+        nomeIgreja: 'Igreja Esperança Viva',
+        url: 'esperanca-viva-sp',
+      };
+
+      const igrejaId = 1;
+
+      const connection = {
+        query: jest.fn().mockResolvedValue([{ insertId: igrejaId }]),
+      };
+
+      const result = await igrejaModel.cadastrarIgreja(
+        mockIgreja.nomeIgreja,
+        mockIgreja.url,
+        connection
+      );
+
+      expect(connection.query).toHaveBeenCalledWith(
+        'INSERT INTO igreja (nome, url) VALUES (?, ?)',
+        [mockIgreja.nomeIgreja, mockIgreja.url]
+      );
+
+      expect(result).toBe(1);
+    });
+  });
+
+  describe('Testes do igrejaModel.cadastrarEndereço', () => {
+    test('Deve retornar o id do endereço', async () => {
+      const mockEndereco = {
+        estado: 'SP',
+        cidade: 'São Paulo',
+        bairro: 'Jardim das Flores',
+        rua: 'Rua das Oliveiras',
+        complemento: 'Próximo à praça central',
+      };
+
+      const mockIgrejaId = 5;
+
+      const connection = {
+        query: jest.fn().mockResolvedValue([{ insertId: mockIgrejaId }]),
+      };
+
+      const result = await igrejaModel.cadastrarEndereço(
+        mockIgrejaId,
+        mockEndereco,
+        connection
+      );
+
+      expect(connection.query).toHaveBeenCalledWith(
+        'INSERT INTO igreja_endereco (igreja_id, estado, cidade, bairro, rua, complemento) VALUES (?, ?, ?, ?, ?, ?)',
+        [
+          mockIgrejaId,
+          mockEndereco.estado,
+          mockEndereco.cidade,
+          mockEndereco.bairro,
+          mockEndereco.rua,
+          mockEndereco.complemento,
+        ]
+      );
+
+      expect(result).toBe(5);
+    });
+  });
+
   describe('Testes do igrejaModel.cadastrarTelefone', () => {
     test('Retorna o id do telefone cadastrado', async () => {
       const mockIgreja = {
