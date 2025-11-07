@@ -2,14 +2,8 @@ import igrejaModel from '../models/igrejaModel.js';
 import membrosModel from '../models/membrosModel.js';
 import masterModel from '../models/masterModel.js';
 import pool from '../config/db.js';
-import bcrypt from 'bcrypt';
-import 'dotenv/config';
+import hashSenha from '../util/hashSenha.js';
 
-async function hashSenha(senha) {
-  const saltRounds = parseInt(process.env.SALTROUNDS);
-  const hashedSenha = await bcrypt.hash(senha, saltRounds);
-  return hashedSenha;
-}
 class cadastroIgrejaService {
 
   async cadastrarIgreja(novoCadastro) {

@@ -18,6 +18,7 @@ class masterModel {
   }
 
   async buscarMaster(login, url, connection) {
+
     const [master] = await connection.query(
       'SELECT login, senha, url from membros_master join igreja on igreja.id = membros_master.igreja_id  where login = ? and url = ?',
       [login, url]

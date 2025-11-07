@@ -71,6 +71,26 @@ class usuarios {
       connection.release();
     }
   }
+
+  async buscarAniversariantes(url, mes) {
+    const connection = await pool.getConnection();
+
+    try {
+      await connection.beginTransaction();
+
+      const aniversariantes = await membrosModel.buscarAniversariantes(
+        url,
+        mes,
+        connection
+      );
+
+      return aniversariantes;
+    } catch (error) {
+      throw error;
+    } finally {
+      connection.release();
+    }
+  }
 }
 
 export default new usuarios();
