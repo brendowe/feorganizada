@@ -1,3 +1,4 @@
+import { template } from '@babel/core';
 import admModel from '../../src/models/admModel.js';
 
 describe('Testes do admModel', () => {
@@ -72,33 +73,10 @@ describe('Testes do admModel', () => {
     })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   describe('Testes do admModel.buscarADM', () => {
     test('Retorna o adm cadastrado', async () => {
       const mockAdm = {
+        id: 1,
         login: 'carlossilva',
         senha: 'senhaSegura123',
         url: 'esperanca-viva-sp',
@@ -115,7 +93,7 @@ describe('Testes do admModel', () => {
       );
 
       expect(connection.query).toHaveBeenCalledWith(
-        'SELECT login, senha, url FROM membros_adm JOIN igreja ON igreja.id = membros_adm.igreja_id WHERE login = ? AND url = ?',
+        'SELECT membros_adm.id, login, senha, url FROM membros_adm JOIN igreja ON igreja.id = membros_adm.igreja_id WHERE login = ? AND url = ?',
         [mockAdm.login, mockAdm.url]
       );
 
@@ -124,6 +102,8 @@ describe('Testes do admModel', () => {
 
     test('Retorna false caso o adm não esteja cadastrado', async () => {
       const mockAdm = {
+                id: 1,
+
         login: 'carlossilva',
         senha: 'senhaSegura123',
         url: 'esperanca-viva-sp',
@@ -140,11 +120,62 @@ describe('Testes do admModel', () => {
       );
 
       expect(connection.query).toHaveBeenCalledWith(
-        'SELECT login, senha, url FROM membros_adm JOIN igreja ON igreja.id = membros_adm.igreja_id WHERE login = ? AND url = ?',
+        'SELECT membros_adm.id, login, senha, url FROM membros_adm JOIN igreja ON igreja.id = membros_adm.igreja_id WHERE login = ? AND url = ?',
         [mockAdm.login, mockAdm.url]
       );
 
       expect(result).toBe(false);
     });
   });
+
+
+
+
+  describe('Testes do admModel.alterarSenhaAdm', ()=> {
+
+    test('Retorna o número de linhas alteradas no banco', async () => {
+        const mockAdm = {
+            login: 'Brendo',
+            novaSenha: 12345,
+            id: 71
+        }
+
+
+        const connection = {
+            query: jest.fn().mockResolvedValue([{affectedRows: 1}])
+        }
+
+
+
+        const result = await admModel.alterarSenhaAdm(mockAdm.login, mockAdm.id, mockAdm.novaSenha, connection);
+
+        expect(connection.query).toHaveBeenCalledWith('UPDATE membros_adm SET senha = ? WHERE login = ? AND id = ?', [mockAdm.novaSenha, mockAdm.login, mockAdm.id]);
+
+        expect(result).toEqual(1)
+
+
+
+
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  })
 });

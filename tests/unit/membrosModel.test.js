@@ -146,37 +146,38 @@ WHERE
     });
   });
 
- describe('Testes do membrosModel.buscarMembro', ()=> {
+  describe('Testes do membrosModel.buscarMembro', () => {
+    test('Deve retornar o membro cadastrado naquela URL de Igreja e que possua aquele id', async () => {
+      const mockMembro = {
+        url: 'esperanca-viva-sp',
+        id: 71,
+      };
+      const mockMembros = {
+        id: 71,
+        nome: 'Carlos Silva',
+        nascimento: '1985-07-23',
+        nomeIgreja: 'Igreja Esperança Viva',
+        url: 'esperanca-viva-sp',
+        estado: 'SP',
+        cidade: 'São Paulo',
+        bairro: 'Jardim das Flores',
+        rua: 'Rua das Oliveiras',
+        complemento: 'Próximo à praça central',
+        telefone: '(11) 99876-5432',
+      };
 
-        test('Deve retornar o membro cadastrado naquela URL de Igreja e que possua aquele id', async ()=> {
+      const connection = {
+        query: jest.fn().mockResolvedValue([mockMembros]),
+      };
 
-            const mockMembro = {
-                url: "esperanca-viva-sp",
-                id: 71
+      const result = await membrosModel.buscarMembro(
+        mockMembro.url,
+        mockMembro.id,
+        connection
+      );
 
-            }
-            const mockMembros = {
-                   id: 71,
-    nome: "Carlos Silva",
-    nascimento: "1985-07-23",
-    nomeIgreja: "Igreja Esperança Viva",
-    url: "esperanca-viva-sp",
-   estado: "SP",
-    cidade: "São Paulo",
-    bairro: "Jardim das Flores",
-    rua: "Rua das Oliveiras",
-    complemento: "Próximo à praça central",
-    telefone: "(11) 99876-5432"
-            }
-
-            const connection = {
-                query: jest.fn().mockResolvedValue([mockMembros])
-            };
-
-
-            const result = await membrosModel.buscarMembro(mockMembro.url, mockMembro.id, connection);
-
-            expect(connection.query).toHaveBeenCalledWith(`SELECT
+      expect(connection.query).toHaveBeenCalledWith(
+        `SELECT
     m.id,
     m.nome,
     m.nascimento,
@@ -197,20 +198,70 @@ FROM
         JOIN
     membros_telefone mt ON mt.membros_id = m.id
 WHERE
-    url = ? AND m.id = ?`, [mockMembro.url,  mockMembro.id]);
+    url = ? AND m.id = ?`,
+        [mockMembro.url, mockMembro.id]
+      );
 
-expect(result).toEqual(mockMembros)
+      expect(result).toEqual(mockMembros);
+    });
+  });
 
+  describe('Testes do membrosModel.buscarAniversariantes', () => {
+    test('Deve retornar todos os aniversariantes de um determinado mês', async () => {
+      const mockInfos = {
+        url: 'esperanca-viva-sp',
+        mes: 5,
+      };
 
+      const mockAniversariantes = [
+        {
+          id: 1,
+          nome: 'Rafael Oliveira',
+          nascimento: '2001-05-22 00:00:00',
+          telefone: '(71) 91234-5678',
+        },
+        {
+          id: 2,
+          nome: 'Brendo Washington Oliveira',
+          nascimento: '2001-05-22 00:00:00',
+          telefone: '(71) 91234-5678',
+        },
+        {
+          id: 3,
+          nome: 'Brendo Washington 22222',
+          nascimento: '2001-05-22 00:00:00',
+          telefone: '(71) 91234-5678',
+        },
+      ];
 
+      const connection = {
+        query: jest.fn().mockResolvedValue([mockAniversariantes]),
+      };
 
+      const result = await membrosModel.buscarAniversariantes(
+        mockInfos.url,
+        mockInfos.mes,
+        connection
+      );
 
+      expect(connection.query).toHaveBeenCalledWith(
+        `SELECT
+    m.id,
+    m.nome,
+    m.nascimento,
+    mt.telefone
+FROM
+    membros m
+        JOIN
+    igreja i ON i.id = m.igreja_id
+        JOIN
+    membros_telefone mt ON mt.membros_id = m.id
+WHERE
+    url = ? AND MONTH (m.nascimento) = ?`,
+        [mockInfos.url, mockInfos.mes]
+      );
 
-
-
-
-
-
-        })
-
-})})
+      expect(result).toEqual(mockAniversariantes);
+    });
+  });
+});
