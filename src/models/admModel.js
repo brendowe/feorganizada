@@ -8,10 +8,6 @@ class admModel {
     return admCadastro.insertId;
   }
 
-
-
-
-  
   async buscarADM(login, url, connection) {
     const [adm] = await connection.query(
       'SELECT membros_adm.id, login, senha, url FROM membros_adm JOIN igreja ON igreja.id = membros_adm.igreja_id WHERE login = ? AND url = ?',
@@ -24,16 +20,6 @@ class admModel {
 
     return false;
   }
-
-
-
-
-
-
-
-
-
-
 
   async alterarSenhaAdm(login, id, novaSenha, connection) {
     const [adm] = await connection.query(
