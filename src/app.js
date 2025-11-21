@@ -2,6 +2,7 @@ import express from 'express';
 import authRouter from './routes/auth.routes.js';
 import usuariosRouter from './routes/usuarios.routes.js';
 import masterRouter from './routes/master.routes.js';
+import cors from 'cors';
 
 class App {
   constructor() {
@@ -11,6 +12,7 @@ class App {
   }
 
   middlewares() {
+    this.server.use(cors({ origin: 'http://127.0.0.1:5500' }));
     this.server.use(express.json());
   }
 
