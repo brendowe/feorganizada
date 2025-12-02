@@ -89,8 +89,15 @@ WHERE
       [url, id]
     );
 
-    return membro;
+
+    if (membro.length > 0) {
+      return membro;
+    }
+
+    return null;
   }
+
+
 
   async buscarAniversariantes(url, mes, connection) {
     const [aniversariantes] = await connection.query(

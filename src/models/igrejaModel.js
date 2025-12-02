@@ -41,6 +41,16 @@ class igrejaModel {
     return urlVerificada.length > 0;
   }
 
+
+
+
+
+
+
+
+
+
+  
   async igrejaId(url, connection) {
     const [igrejaId] = await connection.query(
       'SELECT id FROM igreja WHERE url = ?',
