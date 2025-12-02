@@ -8,35 +8,6 @@ class ministerioModel {
     return ministerio.insertId;
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   async buscarMinisterios(igrejaId, connection) {
     const [ministerios] = await connection.query(
       'SELECT * FROM ministerios WHERE igreja_id = ?',
@@ -51,24 +22,54 @@ class ministerioModel {
       [igrejaId, nome]
     );
 
-    if(ministerio.length > 0) {
-        return ministerio
+    if (ministerio.length > 0) {
+      return ministerio;
     }
-
 
     return null;
   }
 
-
- async verificarMinisterio(igrejaId, nome, connection) {
+  async verificarMinisterioId(igrejaId, ministerioId, connection) {
     const [ministerio] = await connection.query(
-      'SELECT * FROM ministerios WHERE igreja_id = ? AND nome = ?',
-      [igrejaId, nome]
+      'SELECT * FROM ministerios WHERE igreja_id = ? AND id = ?',
+      [igrejaId, ministerioId]
     );
 
+    if (ministerio.length > 0) {
+      return true
+    }
+
+    return false;
+  }
+
+
+
+
+
+
+
+
+
+
+
+  async verificarMinisterio(igrejaId, nomeMinisterio, connection) {
+    const [ministerio] = await connection.query(
+      'SELECT * FROM ministerios WHERE igreja_id = ? AND nome = ?',
+      [igrejaId, nomeMinisterio]
+    );
 
     return ministerio.length > 0;
   }
+
+
+
+
+
+
+
+
+
+
 
 
   async buscarMembrosMinisterio(ministerioId, igrejaId, connection) {
@@ -80,13 +81,35 @@ class ministerioModel {
     return membros;
   }
 
+
+  async verificarMembroMinisterio(ministerioId, membroId, connection) {
+    const [membro] = await connection.query(
+      'SELECT * FROM ministerios_membros WHERE ministerios_id = ? AND membros_id = ?',
+      [ministerioId, membroId]
+    );
+
+    if(membro.length > 0) {
+        return true
+    }
+
+    return false;
+
+}
+
+
+
   async cadastrarMembroMinisterio(ministerioId, membroId, funcao, connection) {
     const [membro] = await connection.query(
       `INSERT INTO ministerios_membros (ministerios_id, membros_id, funcao) VALUES (?, ?, ?)`,
       [ministerioId, membroId, funcao]
     );
 
-    return membro.insertId;
+    if(membro.affectedRows > 0) {
+
+        return membro.insertId;
+    }
+
+    return null;
   }
 }
 
