@@ -44,6 +44,20 @@ class ministeriosController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  async buscarMembrosMinisterio(req, res) {
+    const { url, ministerioId } = req.params;
+
+    try {
+      res
+        .status(200)
+        .json(
+          await ministeriosService.buscarMembrosMinisterio(ministerioId, url)
+        );
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 }
 
 export default new ministeriosController();

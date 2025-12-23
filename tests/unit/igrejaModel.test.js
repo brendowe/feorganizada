@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import igrejaModel from '../../src/models/igrejaModel.js';
 
 describe('Testes do igrejaModel', () => {

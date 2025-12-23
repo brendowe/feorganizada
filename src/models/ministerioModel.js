@@ -36,21 +36,11 @@ class ministerioModel {
     );
 
     if (ministerio.length > 0) {
-      return true
+      return true;
     }
 
     return false;
   }
-
-
-
-
-
-
-
-
-
-
 
   async verificarMinisterio(igrejaId, nomeMinisterio, connection) {
     const [ministerio] = await connection.query(
@@ -61,26 +51,31 @@ class ministerioModel {
     return ministerio.length > 0;
   }
 
-
-
-
-
-
-
-
-
-
-
-
   async buscarMembrosMinisterio(ministerioId, igrejaId, connection) {
     const [membros] = await connection.query(
-      'SELECT * FROM ministerios_membros WHERE ministerios_id = ? AND igreja_id = ?',
+      `SELECT
+    memb.nome AS Nome,
+    mini.id AS IdMinisterio,
+    mini.nome AS Ministerio,
+    mm.funcao AS Função,
+    memb.igreja_id AS idIgreja
+FROM
+    membros memb
+        JOIN
+    ministerios_membros mm ON memb.id = mm.id
+        JOIN
+    ministerios mini ON mini.id = mm.ministerios_id
+WHERE
+    mini.id = ? AND mini.igreja_id = ?`,
       [ministerioId, igrejaId]
     );
 
-    return membros;
-  }
+    if (membros.length > 0) {
+      return membros;
+    }
 
+    return null;
+  }
 
   async verificarMembroMinisterio(ministerioId, membroId, connection) {
     const [membro] = await connection.query(
@@ -88,15 +83,12 @@ class ministerioModel {
       [ministerioId, membroId]
     );
 
-    if(membro.length > 0) {
-        return true
+    if (membro.length > 0) {
+      return true;
     }
 
     return false;
-
-}
-
-
+  }
 
   async cadastrarMembroMinisterio(ministerioId, membroId, funcao, connection) {
     const [membro] = await connection.query(
@@ -104,12 +96,7 @@ class ministerioModel {
       [ministerioId, membroId, funcao]
     );
 
-    if(membro.affectedRows > 0) {
-
-        return membro.insertId;
-    }
-
-    return null;
+    return membro.insertId;
   }
 }
 

@@ -1,4 +1,4 @@
-import '../config/env.js';
+import 'dotenv/config';
 import mysql from 'mysql2/promise';
 const host = process.env.HOST;
 const user = process.env.USER;
@@ -16,6 +16,5 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
-console.log('Banco carregado:', process.env.DATABASE);
 
 export default pool;

@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import masterModel from '../../src/models/masterModel.js';
 
 describe('Testes do masterModel', () => {
@@ -13,17 +14,28 @@ describe('Testes do masterModel', () => {
       };
 
       const connection = {
-        query: jest.fn().mockResolvedValue([{insertId: 1}]),
+        query: jest.fn().mockResolvedValue([{ insertId: 1 }]),
       };
 
+      const result = await masterModel.cadastrarMaster(
+        mockUser.igreja_id,
+        mockUser.membros_id,
+        mockUser,
+        connection
+      );
 
-      const result = await masterModel.cadastrarMaster(mockUser.igreja_id, mockUser.membros_id, mockUser, connection);
+      expect(connection.query).toHaveBeenCalledWith(
+        'INSERT INTO membros_master (login, senha, email, membros_id, igreja_id) VALUES (?, ?, ?, ?, ?)',
+        [
+          mockUser.login,
+          mockUser.senha,
+          mockUser.email,
+          mockUser.membros_id,
+          mockUser.igreja_id,
+        ]
+      );
 
-      expect(connection.query).toHaveBeenCalledWith('INSERT INTO membros_master (login, senha, email, membros_id, igreja_id) VALUES (?, ?, ?, ?, ?)',
-      [mockUser.login, mockUser.senha, mockUser.email, mockUser.membros_id, mockUser.igreja_id]);
-
-      expect(result).toBe(1)
-
+      expect(result).toBe(1);
     });
   });
 
