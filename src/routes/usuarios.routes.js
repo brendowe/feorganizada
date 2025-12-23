@@ -25,10 +25,6 @@ usuariosRouter.get(
   authToken,
   usuariosController.buscarAniversariantes
 );
-usuariosRouter.post('/:url/ministerios', authToken, ministeriosController.cadastrarMinisterio);
 
-usuariosRouter.get('/:url/ministerios', authToken, ministeriosController.buscarMinisterios);
-
-usuariosRouter.post('/:url/ministerios/:ministerioId', authToken, ministeriosController.cadastrarMembroMinisterio);
 
 export default usuariosRouter;

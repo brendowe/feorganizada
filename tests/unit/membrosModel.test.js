@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import membrosModel from '../../src/models/membrosModel.js';
 
 describe('Testes do membrosModel', () => {
@@ -167,7 +168,7 @@ WHERE
       };
 
       const connection = {
-        query: jest.fn().mockResolvedValue([mockMembros]),
+        query: jest.fn().mockResolvedValue([[mockMembros]]),
       };
 
       const result = await membrosModel.buscarMembro(
@@ -203,6 +204,51 @@ WHERE
       );
 
       expect(result).toEqual(mockMembros);
+    });
+
+    test('Deve retornar NULL caso o membro ou a Igreja estejam errados', async () => {
+      const mockMembro = {
+        url: 'esperanca-viva-sp',
+        id: 71,
+      };
+
+      const connection = {
+        query: jest.fn().mockResolvedValue([[]]),
+      };
+
+      const result = await membrosModel.buscarMembro(
+        mockMembro.url,
+        mockMembro.id,
+        connection
+      );
+
+      expect(connection.query).toHaveBeenCalledWith(
+        `SELECT
+    m.id,
+    m.nome,
+    m.nascimento,
+    i.nome AS nomeIgreja,
+    i.url,
+    me.estado,
+    me.cidade,
+    me.bairro,
+    me.rua,
+    me.complemento,
+    mt.telefone
+FROM
+    membros m
+        JOIN
+    igreja i ON i.id = m.igreja_id
+        JOIN
+    membros_endereco me ON me.membros_id = m.id
+        JOIN
+    membros_telefone mt ON mt.membros_id = m.id
+WHERE
+    url = ? AND m.id = ?`,
+        [mockMembro.url, mockMembro.id]
+      );
+
+      expect(result).toEqual(null);
     });
   });
 

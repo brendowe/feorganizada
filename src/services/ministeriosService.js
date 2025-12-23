@@ -135,6 +135,43 @@ class ministeriosService {
       connection.release();
     }
   }
+
+
+  async buscarMembrosMinisterio (ministerioId, url) {
+    const connection = await pool.getConnection();
+
+
+    try {
+        await connection.beginTransaction();
+
+        const igrejaId = await igrejaModel.igrejaId(url, connection);
+        
+        const buscarMembros = await ministerioModel.buscarMembrosMinisterio(ministerioId, igrejaId, connection);
+
+        if(buscarMembros === null) {
+            await connection.rollback();
+
+            return `Erro. Membros não encontrados`;
+        }
+
+        return buscarMembros;
+
+
+    } catch (error) {
+       await connection.rollback();
+      throw error;
+
+    } finally {
+        connection.release();
+    }
+
+
+
+  }
+
+
+
+
 }
 
 export default new ministeriosService();

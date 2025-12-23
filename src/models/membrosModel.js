@@ -91,7 +91,7 @@ WHERE
 
 
     if (membro.length > 0) {
-      return membro;
+      return membro[0];
     }
 
     return null;
