@@ -204,7 +204,6 @@ Basta substituir o admModel.test.js pelo arquivo que deseja rodar
 
 ### v2.0.1 (atual)
 
-- Atualização do ReadME
 - Adição de coleção do Postman
 
 ### v2.0.0
@@ -226,7 +225,6 @@ Basta substituir o admModel.test.js pelo arquivo que deseja rodar
 
 - Introduzir Validação de dados com JOI
 - Novos testes unitários
-- Arquivo do Postman com os endpoints
 - Um front-end para consumir os dados
 
 Se você tem alguma sugestão sinta-se a vontade para comentar ou me enviar uma mensagem. Toda dica é bem-vinda.
