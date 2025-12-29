@@ -5,7 +5,9 @@ O objetivo é facilitar a organização de membros, eventos, ministérios e outr
 
 ## Estrutura do projeto
 
+```text
 feorganizada/
+├── postman/
 ├── public/
 │   ├── sql/
 ├── src/
@@ -28,6 +30,7 @@ feorganizada/
 ├── jest.setup.js
 ├── package.json
 └── package-lock.json
+```
 
 ## Tecnologias usadas
 
