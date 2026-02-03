@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import ministerioModel from '../../src/models/ministerioModel';
+import ministerioModel from '../../../src/models/ministerioModel';
 
 describe('Testes do ministerioModel', () => {
   describe('Testes do ministerioModel.cadastarMinisterio', () => {

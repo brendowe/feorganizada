@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import admModel from '../../src/models/admModel.js';
+import admModel from '../../../src/models/admModel.js';
 
 describe('Testes do admModel', () => {
   describe('Testes do admModel.cadastrarAdm', () => {

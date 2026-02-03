@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt, { hash } from 'bcrypt';
 import 'dotenv/config';
 
 export default async function hashSenha(senha) {
@@ -6,3 +6,4 @@ export default async function hashSenha(senha) {
   const hashedSenha = await bcrypt.hash(senha, saltRounds);
   return hashedSenha;
 }
+

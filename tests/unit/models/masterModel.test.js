@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import masterModel from '../../src/models/masterModel.js';
+import masterModel from '../../../src/models/masterModel.js';
 
 describe('Testes do masterModel', () => {
   describe('Testes do masterModel.cadastrarMaster', () => {

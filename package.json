@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon -r sucrase/register src/server.js",
-    "test": "set NODE_OPTIONS=--experimental-vm-modules && jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:coverage": "set NODE_OPTIONS=--experimental-vm-modules && jest --coverage",
     "lint": "eslint src/",
     "format": "prettier --write \"src/**/*.{js,json,md}\"",

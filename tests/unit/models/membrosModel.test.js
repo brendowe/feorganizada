@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import membrosModel from '../../src/models/membrosModel.js';
+import membrosModel from '../../../src/models/membrosModel.js';
 
 describe('Testes do membrosModel', () => {
   describe('Testes do membrosModel.cadastrarMembro', () => {

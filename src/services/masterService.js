@@ -8,16 +8,13 @@ class masterService {
     const connection = await pool.getConnection();
 
     try {
-      connection.beginTransaction();
-
       const admCadastrado = await admModel.buscarADM(login, url, connection);
 
       if (admCadastrado != false) {
-        connection.release();
         return 'Usuário já é adm';
       }
 
-      //const membro = await membrosModel.buscarMembro(url, id, connection);
+      await connection.beginTransaction();
 
       const igrejaId = await igrejaModel.igrejaId(url, connection);
       const senhaHash = await hashSenha(senha);
@@ -40,8 +37,6 @@ class masterService {
     const connection = await pool.getConnection();
 
     try {
-      connection.beginTransaction();
-
       const admCadastrado = await admModel.buscarADM(login, url, connection);
 
       if (admCadastrado == false) {
@@ -50,6 +45,8 @@ class masterService {
       }
 
       const novaSenhaHash = await hashSenha(novaSenha);
+
+      connection.beginTransaction();
 
       const senhaAtualizada = await admModel.alterarSenhaAdm(
         admCadastrado.login,
