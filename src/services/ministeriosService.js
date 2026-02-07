@@ -8,8 +8,6 @@ class ministeriosService {
     const connection = await pool.getConnection();
 
     try {
-      await connection.beginTransaction();
-
       const igreja_id = await igrejaModel.igrejaId(
         novoMinisterio.url,
         connection
@@ -26,6 +24,7 @@ class ministeriosService {
 
         return `O nome de ministério ${novoMinisterio.nomeMinisterio} já está cadastrado`;
       }
+      await connection.beginTransaction();
 
       await ministerioModel.cadastrarMinisterio(
         novoMinisterio.nomeMinisterio,
@@ -91,26 +90,30 @@ class ministeriosService {
         return `Erro. Ministério não encontrado`;
       }
 
+      const membroVerificado = await membrosModel.buscarMembro(
+        url,
+        membroId,
+        connection
+      );
 
-
-      const membroVerificado = await membrosModel.buscarMembro(url, membroId, connection);
-
-      if(membroVerificado === null) {
+      if (membroVerificado === null) {
         await connection.rollback();
 
-        return `Erro. Membro não encontrado.`
+        return `Erro. Membro não encontrado.`;
       }
 
-      const membroMinisterioVerificado = await ministerioModel.verificarMembroMinisterio(ministerioId, membroId, connection);
+      const membroMinisterioVerificado =
+        await ministerioModel.verificarMembroMinisterio(
+          ministerioId,
+          membroId,
+          connection
+        );
 
-      if(membroMinisterioVerificado === true) {
+      if (membroMinisterioVerificado === true) {
         await connection.rollback();
 
         return `Erro. Membro já cadastrado nesse ministério`;
       }
-
-
-
 
       const ministerioMembro = await ministerioModel.cadastrarMembroMinisterio(
         ministerioId,
@@ -136,42 +139,34 @@ class ministeriosService {
     }
   }
 
-
-  async buscarMembrosMinisterio (ministerioId, url) {
+  async buscarMembrosMinisterio(ministerioId, url) {
     const connection = await pool.getConnection();
 
-
     try {
-        await connection.beginTransaction();
+      await connection.beginTransaction();
 
-        const igrejaId = await igrejaModel.igrejaId(url, connection);
-        
-        const buscarMembros = await ministerioModel.buscarMembrosMinisterio(ministerioId, igrejaId, connection);
+      const igrejaId = await igrejaModel.igrejaId(url, connection);
 
-        if(buscarMembros === null) {
-            await connection.rollback();
+      const buscarMembros = await ministerioModel.buscarMembrosMinisterio(
+        ministerioId,
+        igrejaId,
+        connection
+      );
 
-            return `Erro. Membros não encontrados`;
-        }
+      if (buscarMembros === null) {
+        await connection.rollback();
 
-        return buscarMembros;
+        return `Erro. Membros não encontrados`;
+      }
 
-
+      return buscarMembros;
     } catch (error) {
-       await connection.rollback();
+      await connection.rollback();
       throw error;
-
     } finally {
-        connection.release();
+      connection.release();
     }
-
-
-
   }
-
-
-
-
 }
 
 export default new ministeriosService();

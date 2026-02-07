@@ -1,3 +1,5 @@
+import igrejaModel from './igrejaModel.js';
+
 class membrosModel {
   async cadastrarMembro(igreja_id, nome, nascimento, connection) {
     const [membroCadastro] = await connection.query(
@@ -89,15 +91,12 @@ WHERE
       [url, id]
     );
 
-
     if (membro.length > 0) {
       return membro[0];
     }
 
     return null;
   }
-
-
 
   async buscarAniversariantes(url, mes, connection) {
     const [aniversariantes] = await connection.query(
@@ -118,6 +117,34 @@ WHERE
     );
 
     return aniversariantes;
+  }
+
+  async deletarMembro(igrejaId, id, connection) {
+    const [result] = await connection.query(
+      `DELETE FROM membros
+WHERE igreja_id = ? AND id = ?`,
+      [igrejaId, id]
+    );
+
+    return result.affectedRows;
+  }
+
+  async deletarEndereco(id, igrejaId, connection) {
+    const [result] = await connection.query(
+      `DELETE me FROM membros_endereco me join membros m on me.membros_id = m.id join igreja i on m.igreja_id = i.id
+WHERE me.membros_id = ? AND i.id = ?`,
+      [id, igrejaId]
+    );
+    return result.affectedRows;
+  }
+
+  async deletarTelefone(id, igrejaId, connection) {
+    const [result] = await connection.query(
+      `DELETE mt FROM membros_telefone mt join membros m on mt.membros_id = m.id join igreja i on m.igreja_id = i.id
+WHERE mt.membros_id = ? AND i.id = ?`,
+      [id, igrejaId]
+    );
+    return result.affectedRows;
   }
 }
 

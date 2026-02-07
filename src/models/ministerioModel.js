@@ -98,6 +98,14 @@ WHERE
 
     return membro.insertId;
   }
+
+  async deletarMinisterioMembro(membroId, igrejaId, connection) {
+    const [result] = await connection.query(
+      'DELETE mm FROM ministerios_membros mm JOIN ministerios m ON mm.ministerios_id = m.id JOIN igreja i ON m.igreja_id = i.id WHERE mm.membros_id = ? AND i.id = ?',
+      [membroId, igrejaId]
+    );
+    return result.affectedRows;
+  }
 }
 
 export default new ministerioModel();

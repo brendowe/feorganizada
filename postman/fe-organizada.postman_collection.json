@@ -1,460 +1,525 @@
 {
-	"info": {
-		"_postman_id": "27695792-5b40-4dcb-8636-a2779a43ece1",
-		"name": "Fé-Organizada",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "39377235"
-	},
-	"item": [
-		{
-			"name": "Autenticação",
-			"item": [
-				{
-					"name": "Cadastro",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"nomeIgreja\": \"Igreja Esperança Viva\",\r\n  \"url\": \"esperanca-viva-sps\",\r\n  \"enderecoIgreja\": {\r\n    \"estado\": \"SP\",\r\n    \"cidade\": \"São Paulo\",\r\n    \"bairro\": \"Jardim das Flores\",\r\n    \"rua\": \"Rua das Oliveiras\",\r\n    \"complemento\": \"Próximo à praça central\"\r\n  },\r\n  \"telefoneIgreja\": \"(11) 91234-5678\",\r\n  \"nome\": \"Carlos Silva\",\r\n  \"nascimento\": \"1985-07-23\",\r\n  \"endereco\": {\r\n    \"estado\": \"SP\",\r\n    \"cidade\": \"São Paulo\",\r\n    \"bairro\": \"Vila Nova\",\r\n    \"rua\": \"Rua dos Lírios\",\r\n    \"complemento\": \"Apartamento 101\"\r\n  },\r\n  \"telefone\": \"(11) 99876-5432\",\r\n  \"master\": {\r\n    \"login\": \"carlossilva\",\r\n    \"senha\": \"senhaSegura123\",\r\n    \"email\": \"car2lossilva@email.com\"\r\n  }\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/cadastro",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"cadastro"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "LoginMaster",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"login\": \"carlossilva\",\r\n    \"senha\": \"senhaSegura123\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/esperanca-viva-sp/login",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"esperanca-viva-sp",
-								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "LoginAdm",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"login\": \"Juliana52\",\r\n    \"senha\": \"0123456\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/esperanca-viva-sp/login",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"esperanca-viva-sp",
-								"login"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Master",
-			"item": [
-				{
-					"name": "CadastrarAdm",
-					"request": {
-						"method": "POST",
-						"header": []
-					},
-					"response": []
-				},
-				{
-					"name": "AlterarSenhaAdm",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NjI1MjczNjAsImV4cCI6MTc2MjUzMDk2MH0.wbv5G8fzQ1-7cODfTn9qm9oXlFKHMjveyFQ-O0e4fBk",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\"novaSenha\": \"0123456\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/esperanca-viva-sp/adm/Juliana52",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"esperanca-viva-sp",
-								"adm",
-								"Juliana52"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Membros",
-			"item": [
-				{
-					"name": "CadastrarMembro",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NjEzMTk4MjcsImV4cCI6MTc2MTMyMzQyN30.k3nDDaDHrb0Ajofo_3eMRQ0za-GF-OrC7lU1Bk61oLw",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"nome\": \"Brendo Washington 22222\",\r\n  \"nascimento\": \"2001-05-22\",\r\n  \"endereco\": {\r\n    \"estado\": \"BA\",\r\n    \"cidade\": \"Salvador\",\r\n    \"bairro\": \"Barra\",\r\n    \"rua\": \"Avenida Oceânica\",\r\n    \"complemento\": \"Apartamento 504\"\r\n  },\r\n  \"telefone\": \"(71) 91234-5678\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/esperanca-viva-sp/membros",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"esperanca-viva-sp",
-								"membros"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "ListarAniversariantes",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NjI4NzU1NzgsImV4cCI6MTc2Mjg3OTE3OH0.HYGjLZ47B32iJkSUu2Tl2zMuO1ScfSiiXN4E87LEPTM",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3000/api/esperanca-viva-sp/aniversariantes/5",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"esperanca-viva-sp",
-								"aniversariantes",
-								"5"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Membros",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NjEzMTk4MjcsImV4cCI6MTc2MTMyMzQyN30.k3nDDaDHrb0Ajofo_3eMRQ0za-GF-OrC7lU1Bk61oLw",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/esperanca-viva-sp/membros",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"esperanca-viva-sp",
-								"membros"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Membro",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NjUyOTQ0MDQsImV4cCI6MTc2NTI5ODAwNH0.AGSKbVWu7tURm0VCphLtlA_A9ImM9uTkAr7z1c7D5BY",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3000/api/esperanca-viva-sp/membros/8",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"esperanca-viva-sp",
-								"membros",
-								"8"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Ministérios",
-			"item": [
-				{
-					"name": "Cadastrar Ministerio",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NjM4MjM3NjUsImV4cCI6MTc2MzgyNzM2NX0.c5m7TqeP33r25sR1Lk4OeIdR4xir_YZkAoW_LkM3vjo",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"nomeMinisterio\": \"Escola Bíblica Dominical\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/esperanca-viva-sp/ministerios",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"esperanca-viva-sp",
-								"ministerios"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Cadastrar Membro Ministério",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NjQ2MDU3OTQsImV4cCI6MTc2NDYwOTM5NH0._PktMt7n7VmRIbgpscLeBGQJ3-4vzS7C5dN66bklIQo",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"membroId\": 6,\r\n    \"funcao\": \"Líder dos Jovens\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/esperanca-viva-sp/ministerios/2",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"esperanca-viva-sp",
-								"ministerios",
-								"2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Buscar Ministerios",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NjQ2ODcwMDUsImV4cCI6MTc2NDY5MDYwNX0.hsVz3g5qrPBy9rxYxAd8OyzIMKjeTTqjK62Le-EhH-c",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3000/api/esperanca-viva-sp/ministerios",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"esperanca-viva-sp",
-								"ministerios"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Buscar Membros Ministérios",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NjUyMDgwMDMsImV4cCI6MTc2NTIxMTYwM30.4s6HexUlfTxvjf81rsVFEY9CT4hDuyszP8sV0m0440I",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3000/api/esperanca-viva-sp/ministerios/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"esperanca-viva-sp",
-								"ministerios",
-								"1"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		}
-	]
+  "info": {
+    "_postman_id": "27695792-5b40-4dcb-8636-a2779a43ece1",
+    "name": "Fé-Organizada",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "39377235"
+  },
+  "item": [
+    {
+      "name": "Autenticação",
+      "item": [
+        {
+          "name": "Cadastro",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nomeIgreja\": \"Igreja Esperança Viva\",\r\n  \"url\": \"esperanca-viva-sps\",\r\n  \"enderecoIgreja\": {\r\n    \"estado\": \"SP\",\r\n    \"cidade\": \"São Paulo\",\r\n    \"bairro\": \"Jardim das Flores\",\r\n    \"rua\": \"Rua das Oliveiras\",\r\n    \"complemento\": \"Próximo à praça central\"\r\n  },\r\n  \"telefoneIgreja\": \"(11) 91234-5678\",\r\n  \"nome\": \"Carlos Silva\",\r\n  \"nascimento\": \"1985-07-23\",\r\n  \"endereco\": {\r\n    \"estado\": \"SP\",\r\n    \"cidade\": \"São Paulo\",\r\n    \"bairro\": \"Vila Nova\",\r\n    \"rua\": \"Rua dos Lírios\",\r\n    \"complemento\": \"Apartamento 101\"\r\n  },\r\n  \"telefone\": \"(11) 99876-5432\",\r\n  \"master\": {\r\n    \"login\": \"carlossilva\",\r\n    \"senha\": \"senhaSegura123\",\r\n    \"email\": \"car2lossilva@email.com\"\r\n  }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/cadastro",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "cadastro"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "LoginMaster",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"login\": \"carlossilva\",\r\n    \"senha\": \"senhaSegura123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/esperanca-viva-sp/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "esperanca-viva-sp",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "LoginAdm",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"login\": \"Juliana52\",\r\n    \"senha\": \"0123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/esperanca-viva-sp/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "esperanca-viva-sp",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Master",
+      "item": [
+        {
+          "name": "CadastrarAdm",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NjgzMTg2NTAsImV4cCI6MTc2ODMyMjI1MH0.2XcJQSuetxb4pJ5n_1UU0QGo8Ck9rbro2qH9MNDo-R4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"login\": \"BW1459\",\r\n    \"senha\": \"123456789\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/esperanca-viva-sp/adm/9",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "esperanca-viva-sp",
+                "adm",
+                "9"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AlterarSenhaAdm",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NjI1MjczNjAsImV4cCI6MTc2MjUzMDk2MH0.wbv5G8fzQ1-7cODfTn9qm9oXlFKHMjveyFQ-O0e4fBk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"novaSenha\": \"0123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/esperanca-viva-sp/adm/Juliana52",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "esperanca-viva-sp",
+                "adm",
+                "Juliana52"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Membros",
+      "item": [
+        {
+          "name": "CadastrarMembro",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NjEzMTk4MjcsImV4cCI6MTc2MTMyMzQyN30.k3nDDaDHrb0Ajofo_3eMRQ0za-GF-OrC7lU1Bk61oLw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nome\": \"Brendo Washington 22222\",\r\n  \"nascimento\": \"2001-05-22\",\r\n  \"endereco\": {\r\n    \"estado\": \"BA\",\r\n    \"cidade\": \"Salvador\",\r\n    \"bairro\": \"Barra\",\r\n    \"rua\": \"Avenida Oceânica\",\r\n    \"complemento\": \"Apartamento 504\"\r\n  },\r\n  \"telefone\": \"(71) 91234-5678\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/esperanca-viva-sp/membros",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "esperanca-viva-sp",
+                "membros"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ListarAniversariantes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NjI4NzU1NzgsImV4cCI6MTc2Mjg3OTE3OH0.HYGjLZ47B32iJkSUu2Tl2zMuO1ScfSiiXN4E87LEPTM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/esperanca-viva-sp/aniversariantes/5",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "esperanca-viva-sp",
+                "aniversariantes",
+                "5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Membros",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NzA0ODMyMTEsImV4cCI6MTc3MDQ4NjgxMX0.HQtOzJ2l4SuJeF2jdcbJulp8b6kUkXY6J7b8HyQIuDc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/esperanca-viva-sp/membros",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "esperanca-viva-sp",
+                "membros"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Membro",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NzA0ODMyMTEsImV4cCI6MTc3MDQ4NjgxMX0.HQtOzJ2l4SuJeF2jdcbJulp8b6kUkXY6J7b8HyQIuDc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/esperanca-viva-sp/membros/18",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "esperanca-viva-sp",
+                "membros",
+                "18"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deletar Membro",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NzA0ODMyMTEsImV4cCI6MTc3MDQ4NjgxMX0.HQtOzJ2l4SuJeF2jdcbJulp8b6kUkXY6J7b8HyQIuDc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/esperanca-viva-sp/membros/18",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "esperanca-viva-sp",
+                "membros",
+                "18"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Ministérios",
+      "item": [
+        {
+          "name": "Cadastrar Ministerio",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NjM4MjM3NjUsImV4cCI6MTc2MzgyNzM2NX0.c5m7TqeP33r25sR1Lk4OeIdR4xir_YZkAoW_LkM3vjo",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"nomeMinisterio\": \"Escola Bíblica Dominical\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/esperanca-viva-sp/ministerios",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "esperanca-viva-sp",
+                "ministerios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cadastrar Membro Ministério",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NjQ2MDU3OTQsImV4cCI6MTc2NDYwOTM5NH0._PktMt7n7VmRIbgpscLeBGQJ3-4vzS7C5dN66bklIQo",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"membroId\": 6,\r\n    \"funcao\": \"Líder dos Jovens\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/esperanca-viva-sp/ministerios/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "esperanca-viva-sp",
+                "ministerios",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Ministerios",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NjQ2ODcwMDUsImV4cCI6MTc2NDY5MDYwNX0.hsVz3g5qrPBy9rxYxAd8OyzIMKjeTTqjK62Le-EhH-c",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/esperanca-viva-sp/ministerios",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "esperanca-viva-sp",
+                "ministerios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Membros Ministérios",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJlc3BlcmFuY2Etdml2YS1zcCIsImxvZ2luIjoiY2FybG9zc2lsdmEiLCJpYXQiOjE3NjUyMDgwMDMsImV4cCI6MTc2NTIxMTYwM30.4s6HexUlfTxvjf81rsVFEY9CT4hDuyszP8sV0m0440I",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/esperanca-viva-sp/ministerios/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "esperanca-viva-sp",
+                "ministerios",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
 }

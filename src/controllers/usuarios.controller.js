@@ -40,6 +40,15 @@ class usuariosController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  async deletarMembro(req, res) {
+    try {
+      const { url, id } = req.params;
+      res.json(await usuariosService.deletarMembro(url, id));
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 }
 
 export default new usuariosController();

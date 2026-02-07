@@ -34,4 +34,10 @@ usuariosRouter.get(
   usuariosController.buscarAniversariantes
 );
 
+usuariosRouter.delete('/:url/membros/:id',
+  schemaValidator(usuariosValidator.deletarMembroSchemaParams, 'params'),
+  authToken,
+  usuariosController.deletarMembro
+);
+
 export default usuariosRouter;

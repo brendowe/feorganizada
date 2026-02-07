@@ -4,12 +4,14 @@ import usuariosRouter from './routes/usuarios.routes.js';
 import masterRouter from './routes/master.routes.js';
 import ministeriosRouter from './routes/ministerios.routes.js';
 import cors from 'cors';
+import { errorHandler } from './middlewares/errorHandler.js';
 
 class App {
   constructor() {
     this.server = express();
     this.middlewares();
     this.routes();
+    this.errorHandler();
   }
 
   middlewares() {
@@ -24,9 +26,10 @@ class App {
     this.server.use('/api', ministeriosRouter);
   }
 
-  exceptionHandler() {
-    this.server.use(errorMiddleware);
+  errorHandler() {
+    this.server.use(errorHandler);
   }
 }
 
 export default new App().server;
+

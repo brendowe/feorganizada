@@ -23,3 +23,8 @@ export const buscarAniversariantesSchemaParams = Joi.object({
   url: urlSchema,
   mes: Joi.number().min(1).max(12).required(),
 });
+
+export const deletarMembroSchemaParams = Joi.object({
+  url: urlSchema,
+  id: Joi.number().required(),
+});

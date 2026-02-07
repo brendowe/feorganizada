@@ -1,3 +1,5 @@
+import igrejaModel from './igrejaModel.js';
+
 class admModel {
   async cadastrarAdm(igreja_id, membros_id, login, senha, connection) {
     const [admCadastro] = await connection.query(
@@ -20,6 +22,21 @@ class admModel {
 
     return false;
   }
+
+  async verificarAdm(membroId, url, connection) {
+    const igrejaId = await igrejaModel.igrejaId(url, connection);
+    const [adm] = await connection.query(
+      'SELECT * FROM membros_adm WHERE membros_id = ? AND igreja_id = ?',
+      [membroId, igrejaId]
+    )
+
+    if (adm.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+
+}
 
   async alterarSenhaAdm(login, id, novaSenha, connection) {
     const [adm] = await connection.query(
