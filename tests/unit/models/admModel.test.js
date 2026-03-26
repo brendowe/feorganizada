@@ -1,17 +1,21 @@
-import { jest } from '@jest/globals';
+import { beforeEach, jest } from '@jest/globals';
 import admModel from '../../../src/models/admModel.js';
+
+const mockAdm = {
+  id: 6,
+  igrejaId: 2,
+  membrosId: 66,
+  login: 'carlossilva',
+  senha: 'senhaSegura123',
+};
+
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
 describe('Testes do admModel', () => {
   describe('Testes do admModel.cadastrarAdm', () => {
     test('Deve retornar o id do adm cadastrado', async () => {
-      const mockAdm = {
-        id: 6,
-        igrejaId: 2,
-        membrosId: 66,
-        login: 'carlossilva',
-        senha: 'senhaSegura123',
-      };
-
       const connection = {
         query: jest.fn().mockResolvedValue([{ insertId: 6 }]),
       };
@@ -35,13 +39,6 @@ describe('Testes do admModel', () => {
 
   describe('Testes do admModel.buscarADM', () => {
     test('Retorna o adm cadastrado', async () => {
-      const mockAdm = {
-        id: 1,
-        login: 'carlossilva',
-        senha: 'senhaSegura123',
-        url: 'esperanca-viva-sp',
-      };
-
       const connection = {
         query: jest.fn().mockResolvedValue([[mockAdm]]),
       };
@@ -61,14 +58,6 @@ describe('Testes do admModel', () => {
     });
 
     test('Retorna false caso o adm não esteja cadastrado', async () => {
-      const mockAdm = {
-        id: 1,
-
-        login: 'carlossilva',
-        senha: 'senhaSegura123',
-        url: 'esperanca-viva-sp',
-      };
-
       const connection = {
         query: jest.fn().mockResolvedValue([[]]),
       };

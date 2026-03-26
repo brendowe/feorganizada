@@ -1,5 +1,6 @@
 import pool from "../config/db.js";
 import masterModel from "../models/masterModel.js";
+import { errorHandler } from "./errorHandler.js";
 
 export default async function  authMaster(req, res, next) {
   const connection = await pool.getConnection();
@@ -10,9 +11,11 @@ export default async function  authMaster(req, res, next) {
 
   if(!usuarioMaster) {
     connection.release();
-   return res.status(400).json({
-        message: 'Apenas usuários master são permitidos'
-    })
+
+    const error = new Error('Acesso negado: usuário não é um master');
+    error.statusCode = 403;
+
+    return error;
   }
 
   next();

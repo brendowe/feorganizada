@@ -1,14 +1,17 @@
 import cadastroIgrejaService from '../services/cadastroIgrejaService.js';
 
-class cadastroIgrejaController {
-  async cadastro(req, res) {
+class CadastroIgrejaController {
+  async cadastro(req, res, next) {
     try {
-      const novoCadastro = req.body;
-      res.status(200).json({message: await cadastroIgrejaService.cadastrarIgreja(novoCadastro) });
+      const novaIgreja = req.body;
+
+      return res.status(201).json({
+        message: 'Igreja cadastrada com sucesso',
+        data: await cadastroIgrejaService.cadastrarIgreja(novaIgreja),
+      });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return next(error);
     }
   }
 }
-
-export default new cadastroIgrejaController();
+export default new CadastroIgrejaController();

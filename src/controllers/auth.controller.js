@@ -1,6 +1,6 @@
 import authService from '../services/authService.js';
 
-class authController {
+class AuthController {
   async login(req, res, next) {
     try {
       const { url } = req.params;
@@ -8,13 +8,13 @@ class authController {
 
       const token = await authService.login(url, login, senha);
       return res.status(200).json({
-        message: `usuario ${login} logado com sucesso`,
+        message: `usuario logado com sucesso`,
         token,
       });
     } catch (error) {
-     return next(error);
+      return next(error);
     }
   }
 }
 
-export default new authController();
+export default new AuthController();

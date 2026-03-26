@@ -2,7 +2,7 @@ import igrejaModel from '../models/igrejaModel.js';
 import membrosModel from '../models/membrosModel.js';
 import masterModel from '../models/masterModel.js';
 import pool from '../config/db.js';
-import hashSenha from '../util/hashSenha.js';
+import hashSenha from '../utils/hashSenha.js';
 
 class cadastroIgrejaService {
   async cadastrarIgreja(novoCadastro) {
