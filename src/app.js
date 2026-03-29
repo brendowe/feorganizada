@@ -3,6 +3,7 @@ import authRouter from './routes/auth.routes.js';
 import usuariosRouter from './routes/usuarios.routes.js';
 import masterRouter from './routes/master.routes.js';
 import ministeriosRouter from './routes/ministerios.routes.js';
+import igrejaRouter from './routes/igreja.routes.js';
 import cors from 'cors';
 import { errorHandler } from './middlewares/errorHandler.js';
 
@@ -24,6 +25,7 @@ class App {
     this.server.use('/api', usuariosRouter);
     this.server.use('/api', masterRouter);
     this.server.use('/api', ministeriosRouter);
+    this.server.use('/api', igrejaRouter);
   }
 
   errorHandler() {
@@ -32,4 +34,3 @@ class App {
 }
 
 export default new App().server;
-

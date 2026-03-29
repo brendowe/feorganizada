@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { urlSchema } from './url.Validator.js';
+import { urlSchema } from './url.validator.js';
 
 export const cadastrarMinisterioSchemma = Joi.object({
   nomeMinisterio: Joi.string().min(6).max(25).required(),
@@ -11,6 +11,6 @@ export const MinisterioSchemaParams = Joi.object({
 });
 
 export const cadastrarMembrosSchema = Joi.object({
-membroId: Joi.number().required(),
-funcao: Joi.string().min(4).max(15).required()
+  membroId: Joi.number().required(),
+  funcao: Joi.string().min(4).max(15).required(),
 });

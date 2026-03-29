@@ -1,7 +1,7 @@
 import admModel from '../models/admModel.js';
 import igrejaModel from '../models/igrejaModel.js';
 import pool from '../config/db.js';
-import hashSenha from '../utils/hashSenha.js';
+import hashSenha from '../utils/hashsenha.util.js';
 
 class masterService {
   async cadastrarAdm(url, id, login, senha) {

@@ -3,8 +3,8 @@ import admModel from '../models/admModel.js';
 import pool from '../config/db.js';
 import bcrypt from 'bcrypt';
 import 'dotenv/config';
-import AppError from '../errors/AppError.js';
-import gerarJWT from '../utils/gerarJWT.js';
+import AppError from '../errors/apperror.js';
+import gerarJWT from '../utils/gerarjwt.util.js';
 
 class AuthService {
   async login(url, login, senha) {

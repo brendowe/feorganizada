@@ -4,7 +4,7 @@ import masterModel from '../models/masterModel.js';
 import admModel from '../models/admModel.js';
 import pool from '../config/db.js';
 
-export default async function authToken(req, res, next) {
+export default async function authMiddleware(req, res, next) {
   const connection = await pool.getConnection();
   const headers = req.headers['authorization'];
 

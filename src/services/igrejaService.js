@@ -2,9 +2,9 @@ import igrejaModel from '../models/igrejaModel.js';
 import membrosModel from '../models/membrosModel.js';
 import masterModel from '../models/masterModel.js';
 import pool from '../config/db.js';
-import hashSenha from '../utils/hashSenha.js';
+import hashSenha from '../utils/hashsenha.util.js';
 
-class cadastroIgrejaService {
+class IgrejaService {
   async cadastrarIgreja(novoCadastro) {
     const connection = await pool.getConnection();
 
@@ -79,4 +79,4 @@ class cadastroIgrejaService {
   }
 }
 
-export default new cadastroIgrejaService();
+export default new IgrejaService();
