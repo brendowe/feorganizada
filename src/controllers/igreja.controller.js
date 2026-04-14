@@ -1,4 +1,4 @@
-import IgrejaService from '../services/igrejaService.js';
+import IgrejaService from '../services/igreja.service.js';
 
 class IgrejaController {
   async cadastro(req, res, next) {

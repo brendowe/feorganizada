@@ -1,29 +1,33 @@
 import pool from '../config/db.js';
-import masterModel from '../models/masterModel.js';
-import AppError from '../errors/AppError.js';
+import MasterModel from '../models/master.model.js';
+import AppError from '../errors/apperror.js';
 
 export default async function masterMiddleware(req, res, next) {
-  if (!req.usuario) {
-    return next(new AppError('Usuário não autenticado', 401));
-  }
-
-  const connection = await pool.getConnection();
+  let connection;
 
   try {
-    const usuarioMaster = await masterModel.buscarMaster(
+    if (!req.usuario) {
+      throw new AppError('Acesso negado: usuário não autenticado', 401);
+    }
+
+    connection = await pool.getConnection();
+
+    const usuarioMaster = await MasterModel.buscarMaster(
       req.usuario.login,
       req.usuario.url,
       connection
     );
 
     if (!usuarioMaster) {
-      return next(new AppError('Acesso negado: usuário não é um master', 403));
+      throw new AppError('Acesso negado: usuário não é um master', 403);
     }
 
     return next();
   } catch (error) {
     return next(error);
   } finally {
-    connection.release();
+    if (connection) {
+      connection.release();
+    }
   }
 }

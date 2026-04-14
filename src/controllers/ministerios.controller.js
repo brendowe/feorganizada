@@ -1,4 +1,4 @@
-import ministeriosService from '../services/ministeriosService.js';
+import MinisteriosService from '../services/ministerios.service.js';
 
 class MinisteriosController {
   async cadastrarMinisterio(req, res, next) {
@@ -8,7 +8,7 @@ class MinisteriosController {
 
       return res.status(201).json({
         message: 'Ministério cadastrado com sucesso',
-        data: await ministeriosService.cadastrarMinisterio(url, nomeMinisterio),
+        data: await MinisteriosService.cadastrarMinisterio(url, nomeMinisterio),
       });
     } catch (error) {
       return next(error);
@@ -21,7 +21,7 @@ class MinisteriosController {
 
       return res.status(200).json({
         message: 'Ministérios encontrados com sucesso',
-        data: await ministeriosService.buscarMinisterios(url),
+        data: await MinisteriosService.buscarMinisterios(url),
       });
     } catch (error) {
       return next(error);
@@ -35,7 +35,7 @@ class MinisteriosController {
 
       return res.status(201).json({
         message: 'Membro cadastrado no ministério com sucesso',
-        data: await ministeriosService.cadastrarMembroMinisterio(
+        data: await MinisteriosService.cadastrarMembroMinisterio(
           url,
           ministerioId,
           membroId,
@@ -54,7 +54,7 @@ class MinisteriosController {
         .status(200)
         .json({
           message: 'Membros do ministério encontrados com sucesso',
-          data: await ministeriosService.buscarMembrosMinisterio(ministerioId, url),
+          data: await MinisteriosService.buscarMembrosMinisterio(ministerioId, url),
         });
     } catch (error) {
       return next(error);

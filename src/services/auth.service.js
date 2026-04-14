@@ -1,5 +1,5 @@
-import masterModel from '../models/masterModel.js';
-import admModel from '../models/admModel.js';
+import MasterModel from '../models/master.model.js';
+import AdmModel from '../models/adm.model.js';
 import pool from '../config/db.js';
 import bcrypt from 'bcrypt';
 import 'dotenv/config';
@@ -8,25 +8,31 @@ import gerarJWT from '../utils/gerarjwt.util.js';
 
 class AuthService {
   async login(url, login, senha) {
-    const connection = await pool.getConnection();
+    let connection;
 
     try {
-      const usuario = await this.buscarUsuario(login, url, connection);
+      connection = await pool.getConnection();
+
+      const admModel = new AdmModel(connection);
+      const masterModel = new MasterModel(connection);
+
+      const usuario = await this.buscarUsuario(
+        login,
+        url,
+        admModel,
+        masterModel
+      );
       await this.verificarSenha(senha, usuario.senha);
       const token = gerarJWT(usuario);
       return token;
     } finally {
-      connection.release();
+      if (connection) connection.release();
     }
   }
 
-  async buscarUsuario(login, url, connection) {
-    const usuarioAdm = await admModel.buscarADM(login, url, connection);
-    const usuarioMaster = await masterModel.buscarMaster(
-      login,
-      url,
-      connection
-    );
+  async buscarUsuario(login, url, admModel, masterModel) {
+    const usuarioAdm = await admModel.buscarADM(login, url);
+    const usuarioMaster = await masterModel.buscarMaster(login, url);
 
     if (!usuarioAdm && !usuarioMaster) {
       throw new AppError('Usuário não cadastrado', 404);

@@ -1,3 +1,5 @@
+import AppError from '../errors/apperror';
+
 const validateMiddleware = (schema, property = 'body') => {
   return (req, res, next) => {
     const { error } = schema.validate(req[property], {
@@ -5,12 +7,10 @@ const validateMiddleware = (schema, property = 'body') => {
     });
 
     if (error) {
-      return res.status(400).json({
-        message: error.details[0].message,
-      });
+      return next(new AppError(error.details[0].message, 400));
     }
 
-    next();
+    return next();
   };
 };
 

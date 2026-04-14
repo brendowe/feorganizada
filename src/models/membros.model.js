@@ -1,16 +1,17 @@
-import igrejaModel from './igrejaModel.js';
-
-class membrosModel {
-  async cadastrarMembro(igreja_id, nome, nascimento, connection) {
-    const [membroCadastro] = await connection.query(
+class MembrosModel {
+  constructor(connection) {
+    this.connection = connection;
+  }
+  async cadastrarMembro(igrejaId, nome, nascimento) {
+    const [result] = await this.connection.query(
       'INSERT INTO membros (nome, nascimento, igreja_id) VALUES (?, ?, ?)',
-      [nome, nascimento, igreja_id]
+      [nome, nascimento, igrejaId]
     );
-    return membroCadastro.insertId;
+    return result.insertId;
   }
 
-  async cadastrarEndereco(membros_id, endereco, connection) {
-    const [membroEndereco] = await connection.query(
+  async cadastrarEndereco(membrosId, endereco) {
+    const [result] = await this.connection.query(
       'INSERT INTO membros_endereco (estado, cidade, bairro, rua, complemento, membros_id) VALUES (?, ?, ?, ?, ?, ?)',
       [
         endereco.estado,
@@ -18,24 +19,24 @@ class membrosModel {
         endereco.bairro,
         endereco.rua,
         endereco.complemento,
-        membros_id,
+        membrosId,
       ]
     );
 
-    return membroEndereco.insertId;
+    return result.insertId;
   }
 
-  async cadastrarTelefone(membros_id, telefone, connection) {
-    const [membroTelefone] = await connection.query(
+  async cadastrarTelefone(membrosId, telefone) {
+    const [result] = await this.connection.query(
       'INSERT INTO membros_telefone (telefone, membros_id) VALUES (?, ?)',
-      [telefone, membros_id]
+      [telefone, membrosId]
     );
 
-    return membroTelefone.insertId;
+    return result.insertId;
   }
 
-  async buscarMembros(url, connection) {
-    const [membros] = await connection.query(
+  async buscarMembros(url) {
+    const [rows] = await this.connection.query(
       `SELECT
     m.id,
     m.nome,
@@ -57,15 +58,15 @@ FROM
         JOIN
     membros_telefone mt ON mt.membros_id = m.id
 WHERE
-    url = ? `,
+    i.url = ? `,
       [url]
     );
 
-    return membros;
+    return rows;
   }
 
-  async buscarMembro(url, id, connection) {
-    const [membro] = await connection.query(
+  async buscarMembro(url, membroId) {
+    const [row] = await this.connection.query(
       `SELECT
     m.id,
     m.nome,
@@ -87,19 +88,15 @@ FROM
         JOIN
     membros_telefone mt ON mt.membros_id = m.id
 WHERE
-    url = ? AND m.id = ?`,
-      [url, id]
+    i.url = ? AND m.id = ?`,
+      [url, membroId]
     );
 
-    if (membro.length > 0) {
-      return membro[0];
-    }
-
-    return null;
+    return row[0];
   }
 
-  async buscarAniversariantes(url, mes, connection) {
-    const [aniversariantes] = await connection.query(
+  async buscarAniversariantes(url, mes) {
+    const [rows] = await this.connection.query(
       `SELECT
     m.id,
     m.nome,
@@ -112,25 +109,25 @@ FROM
         JOIN
     membros_telefone mt ON mt.membros_id = m.id
 WHERE
-    url = ? AND MONTH (m.nascimento) = ?`,
+    i.url = ? AND MONTH (m.nascimento) = ?`,
       [url, mes]
     );
 
-    return aniversariantes;
+    return rows;
   }
 
-  async deletarMembro(igrejaId, id, connection) {
-    const [result] = await connection.query(
+  async deletarMembro(igrejaId, membroId) {
+    const [result] = await this.connection.query(
       `DELETE FROM membros
 WHERE igreja_id = ? AND id = ?`,
-      [igrejaId, id]
+      [igrejaId, membroId]
     );
 
     return result.affectedRows;
   }
 
-  async deletarEndereco(id, igrejaId, connection) {
-    const [result] = await connection.query(
+  async deletarEndereco(id, igrejaId) {
+    const [result] = await this.connection.query(
       `DELETE me FROM membros_endereco me join membros m on me.membros_id = m.id join igreja i on m.igreja_id = i.id
 WHERE me.membros_id = ? AND i.id = ?`,
       [id, igrejaId]
@@ -138,8 +135,8 @@ WHERE me.membros_id = ? AND i.id = ?`,
     return result.affectedRows;
   }
 
-  async deletarTelefone(id, igrejaId, connection) {
-    const [result] = await connection.query(
+  async deletarTelefone(id, igrejaId) {
+    const [result] = await this.connection.query(
       `DELETE mt FROM membros_telefone mt join membros m on mt.membros_id = m.id join igreja i on m.igreja_id = i.id
 WHERE mt.membros_id = ? AND i.id = ?`,
       [id, igrejaId]
@@ -148,4 +145,4 @@ WHERE mt.membros_id = ? AND i.id = ?`,
   }
 }
 
-export default new membrosModel();
+export default MembrosModel;

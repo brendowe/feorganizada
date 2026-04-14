@@ -1,50 +1,52 @@
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
-import masterModel from '../models/masterModel.js';
-import admModel from '../models/admModel.js';
+import MasterModel from '../models/master.model.js';
+import AdmModel from '../models/adm.model.js';
 import pool from '../config/db.js';
+import AppError from '../errors/apperror.js';
 
 export default async function authMiddleware(req, res, next) {
-  const connection = await pool.getConnection();
-  const headers = req.headers['authorization'];
+  let connection;
+  try {
+    const headers = req.headers['authorization'];
 
-  if (!headers) {
-    connection.release();
-    return res.status(400).json({ message: 'Erro. Token não encontrado' });
-  }
-  const token = headers.split(' ')[1];
+    if (!headers) {
+      throw new AppError('Erro. Cabeçalho não encontrado', 401);
+    }
+    const token = headers.split(' ')[1];
 
-  if (!token) {
-    connection.release();
-    return res.status(400).json({ message: 'Erro. Token não encontrado' });
-  }
-
-  jwt.verify(token, process.env.SECRET_KEY, async (error, payload) => {
-    if (error) {
-      connection.release();
-      return res.status(400).json({ message: 'token ou usuario errado' });
+    if (!token) {
+      throw new AppError('Erro. Token não encontrado', 401);
     }
 
-    const usuarioAdm = await admModel.buscarADM(
+    const payload = jwt.verify(token, process.env.SECRET_KEY);
+
+    connection = await pool.getConnection();
+
+    const usuarioAdm = await AdmModel.buscarADM(
       payload.login,
       payload.url,
       connection
     );
-    const usuarioMaster = await masterModel.buscarMaster(
+    const usuarioMaster = await MasterModel.buscarMaster(
       payload.login,
       payload.url,
       connection
     );
 
-    let usuario;
-    if (usuarioAdm) {
-      usuario = usuarioAdm;
-    } else if (usuarioMaster) {
-      usuario = usuarioMaster;
+    const usuario = usuarioAdm || usuarioMaster;
+
+    if (!usuario) {
+      throw new AppError('Acesso negado', 403);
     }
 
     req.usuario = usuario;
-    connection.release();
     next();
-  });
+  } catch (error) {
+    return next(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
 }

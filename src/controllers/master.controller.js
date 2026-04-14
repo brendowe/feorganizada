@@ -1,4 +1,4 @@
-import masterService from '../services/masterService.js';
+import MasterService from '../services/master.service.js';
 
 class MasterController {
   async cadastrarAdm(req, res, next) {
@@ -8,7 +8,7 @@ class MasterController {
 
       return res.status(201).json({
         message: 'Administrador cadastrado com sucesso',
-        data: await masterService.cadastrarAdm(url, id, login, senha),
+        data: await MasterService.cadastrarAdm(url, id, login, senha),
       });
     } catch (error) {
       return next(error);
@@ -18,11 +18,11 @@ class MasterController {
   async atualizarSenhaAdm(req, res, next) {
     try {
       const { url, login } = req.params;
-      const { novaSenha } = req.body;
+      const { novaSenha } = req.body; 
 
       return res.status(200).json({
         message: 'Senha atualizada com sucesso.',
-        data: await masterService.atualizarSenhaAdm(login, url, novaSenha),
+        data: await MasterService.atualizarSenhaAdm(login, url, novaSenha),
       });
     } catch (error) {
       next(error);
