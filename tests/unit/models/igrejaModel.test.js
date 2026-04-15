@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import igrejaModel from '../../../src/models/igrejaModel.js';
+import IgrejaModel from '../../../src/models/igreja.model.js';
 
 describe('Testes do igrejaModel', () => {
   describe('Testes do igrejaModel.cadastrarIgreja', () => {
@@ -10,18 +10,16 @@ describe('Testes do igrejaModel', () => {
       };
 
       const igrejaId = 1;
+      const mockQuery = jest.fn().mockResolvedValue([{ insertId: igrejaId }]);
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([{ insertId: igrejaId }]),
-      };
+      const igrejaModel = new IgrejaModel({ query: mockQuery });
 
       const result = await igrejaModel.cadastrarIgreja(
         mockIgreja.nomeIgreja,
-        mockIgreja.url,
-        connection
+        mockIgreja.url
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
+      expect(mockQuery).toHaveBeenCalledWith(
         'INSERT INTO igreja (nome, url) VALUES (?, ?)',
         [mockIgreja.nomeIgreja, mockIgreja.url]
       );
@@ -42,17 +40,18 @@ describe('Testes do igrejaModel', () => {
 
       const mockIgrejaId = 5;
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([{ insertId: mockIgrejaId }]),
-      };
+      const mockQuery = jest
+        .fn()
+        .mockResolvedValue([{ insertId: mockIgrejaId }]);
+
+      const igrejaModel = new IgrejaModel({ query: mockQuery });
 
       const result = await igrejaModel.cadastrarEndereço(
         mockIgrejaId,
-        mockEndereco,
-        connection
+        mockEndereco
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
+      expect(mockQuery).toHaveBeenCalledWith(
         'INSERT INTO igreja_endereco (igreja_id, estado, cidade, bairro, rua, complemento) VALUES (?, ?, ?, ?, ?, ?)',
         [
           mockIgrejaId,
@@ -75,17 +74,18 @@ describe('Testes do igrejaModel', () => {
         telefoneIgreja: '(11) 91234-5678',
       };
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([{ insertId: 71 }]),
-      };
+      const mockQuery = jest
+        .fn()
+        .mockResolvedValue([{ insertId: mockIgreja.igreja_id }]);
+
+      const igrejaModel = new IgrejaModel({ query: mockQuery });
 
       const result = await igrejaModel.cadastrarTelefone(
         mockIgreja.igreja_id,
-        mockIgreja.telefoneIgreja,
-        connection
+        mockIgreja.telefoneIgreja
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
+      expect(mockQuery).toHaveBeenCalledWith(
         'INSERT INTO igreja_telefone (igreja_id, telefone) VALUES (?, ?)',
         [mockIgreja.igreja_id, mockIgreja.telefoneIgreja]
       );
@@ -102,17 +102,16 @@ describe('Testes do igrejaModel', () => {
         url: 'esperanca-viva-sp',
       };
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([[mockIgreja]]),
-      };
+      const mockQuery = jest
+        .fn()
+        .mockResolvedValue([[{ url: mockIgreja.url }]]);
 
-      const result = await igrejaModel.verificarIgreja(
-        mockIgreja.url,
-        connection
-      );
+      const igrejaModel = new IgrejaModel({ query: mockQuery });
 
-      expect(connection.query).toHaveBeenCalledWith(
-        'SELECT * FROM igreja WHERE url = ?',
+      const result = await igrejaModel.verificarIgreja(mockIgreja.url);
+
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT url FROM igreja WHERE url = ?',
         [mockIgreja.url]
       );
 
@@ -126,17 +125,18 @@ describe('Testes do igrejaModel', () => {
         url: 'esperanca-viva-sp',
       };
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([[]]),
-      };
+       const mockQuery = jest
+        .fn()
+        .mockResolvedValue([[]]);
+
+      const igrejaModel = new IgrejaModel({ query: mockQuery });
 
       const result = await igrejaModel.verificarIgreja(
-        mockIgreja.url,
-        connection
+        mockIgreja.url
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
-        'SELECT * FROM igreja WHERE url = ?',
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT url FROM igreja WHERE url = ?',
         [mockIgreja.url]
       );
 
@@ -151,13 +151,15 @@ describe('Testes do igrejaModel', () => {
         url: 'esperanca-viva-sp',
       };
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([[{ id: mockIgreja.id }]]),
-      };
+      const mockQuery = jest
+        .fn()
+        .mockResolvedValue([[{ id: mockIgreja.id }]]);
 
-      const result = await igrejaModel.igrejaId(mockIgreja.url, connection);
+      const igrejaModel = new IgrejaModel({ query: mockQuery });
 
-      expect(connection.query).toHaveBeenCalledWith(
+      const result = await igrejaModel.igrejaId(mockIgreja.url);
+
+      expect(mockQuery).toHaveBeenCalledWith(
         'SELECT id FROM igreja WHERE url = ?',
         [mockIgreja.url]
       );
@@ -170,13 +172,15 @@ describe('Testes do igrejaModel', () => {
         url: 'esperanca-viva-sp',
       };
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([[]]),
-      };
+      const mockQuery = jest
+        .fn()
+        .mockResolvedValue([[]]);
 
-      const result = await igrejaModel.igrejaId(mockIgreja.url, connection);
+      const igrejaModel = new IgrejaModel({ query: mockQuery });
 
-      expect(connection.query).toHaveBeenCalledWith(
+      const result = await igrejaModel.igrejaId(mockIgreja.url);
+
+      expect(mockQuery).toHaveBeenCalledWith(
         'SELECT id FROM igreja WHERE url = ?',
         [mockIgreja.url]
       );

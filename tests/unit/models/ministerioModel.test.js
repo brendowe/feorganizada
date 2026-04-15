@@ -1,35 +1,36 @@
-import { describe, expect, jest, test } from '@jest/globals';
-import ministerioModel from '../../../src/models/ministerioModel';
+import { beforeEach, jest } from '@jest/globals';
+import MinisterioModel from '../../../src/models/ministerio.model.js';
+
+const mockMinisterio = {
+  id: 7,
+  nome: 'Grupo de Louvor',
+  igrejaId: 2,
+};
+
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
 describe('Testes do ministerioModel', () => {
-  describe('Testes do ministerioModel.cadastarMinisterio', () => {
+  describe('Testes do ministerioModel.cadastrarMinisterio', () => {
     test('Retorna o id do ministerio cadastrado', async () => {
-      const ministerioMock = {
-        id: 7,
-        nome: 'Grupo de Louvor',
-        igreja_id: '2',
-      };
+      const mockQuery = jest
+        .fn()
+        .mockResolvedValue([{ insertId: mockMinisterio.id }]);
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([
-          {
-            insertId: 7,
-          },
-        ]),
-      };
+      const ministerioModel = new MinisterioModel({ query: mockQuery });
 
       const result = await ministerioModel.cadastrarMinisterio(
-        ministerioMock.nome,
-        ministerioMock.igreja_id,
-        connection
+        mockMinisterio.nome,
+        mockMinisterio.igrejaId
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
-        `INSERT INTO ministerios (nome, igreja_id) VALUES (?, ?)`,
-        [ministerioMock.nome, ministerioMock.igreja_id]
+      expect(mockQuery).toHaveBeenCalledWith(
+        'INSERT INTO ministerios (nome, igreja_id) VALUES (?, ?)',
+        [mockMinisterio.nome, mockMinisterio.igrejaId]
       );
 
-      expect(result).toEqual(7);
+      expect(result).toEqual(mockMinisterio.id);
     });
   });
 
@@ -39,23 +40,19 @@ describe('Testes do ministerioModel', () => {
         { id: 1, nome: 'EBD', igreja_id: 2 },
         { id: 2, nome: 'Grupo de Louvor', igreja_id: 2 },
         { id: 3, nome: 'Evangelismo', igreja_id: 2 },
-        { id: 4, nome: 'Grupo Jovem', igreja_id: 2 },
       ];
 
-      const igrejaId = 2;
+      const mockQuery = jest.fn().mockResolvedValue([mockMinisterios]);
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([mockMinisterios]),
-      };
+      const ministerioModel = new MinisterioModel({ query: mockQuery });
 
       const result = await ministerioModel.buscarMinisterios(
-        igrejaId,
-        connection
+        mockMinisterio.igrejaId
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
-        `SELECT * FROM ministerios WHERE igreja_id = ?`,
-        [igrejaId]
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT * FROM ministerios WHERE igreja_id = ?',
+        [mockMinisterio.igrejaId]
       );
 
       expect(result).toEqual(mockMinisterios);
@@ -63,352 +60,301 @@ describe('Testes do ministerioModel', () => {
   });
 
   describe('Testes do ministerioModel.buscarMinisterio', () => {
-    test('Deve retornar o ministério encontrado', async () => {
-      const mockMinisterio = [
+    test('Deve retornar o ministerio encontrado', async () => {
+      const mockResultado = [
         {
           id: 10,
-          nome: 'Escola Bíblica Dominical',
+          nome: 'Escola Biblica Dominical',
           igreja_id: 2,
         },
       ];
 
-      const ministerio = {
-        nome: 'Escola Bíblica Dominical',
-        igrejaId: 2,
-      };
+      const mockQuery = jest.fn().mockResolvedValue([mockResultado]);
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([mockMinisterio]),
-      };
+      const ministerioModel = new MinisterioModel({ query: mockQuery });
 
       const result = await ministerioModel.buscarMinisterio(
-        ministerio.igrejaId,
-        ministerio.nome,
-        connection
+        mockMinisterio.igrejaId,
+        'Escola Biblica Dominical'
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
-        `SELECT * FROM ministerios WHERE igreja_id = ? AND nome = ?`,
-        [ministerio.igrejaId, ministerio.nome]
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT * FROM ministerios WHERE igreja_id = ? AND nome = ?',
+        [mockMinisterio.igrejaId, 'Escola Biblica Dominical']
       );
 
-      expect(result).toEqual(mockMinisterio);
+      expect(result).toEqual(mockResultado);
     });
 
-    test('Deve retornar null se o ministério não for encontrado', async () => {
-      const ministerio = {
-        nome: 'Escola Bíblica Dominical',
-        igrejaId: 2,
-      };
+    test('Deve retornar array vazio caso nao encontre o ministerio', async () => {
+      const mockQuery = jest.fn().mockResolvedValue([[]]);
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([[]]),
-      };
+      const ministerioModel = new MinisterioModel({ query: mockQuery });
 
       const result = await ministerioModel.buscarMinisterio(
-        ministerio.igrejaId,
-        ministerio.nome,
-        connection
+        mockMinisterio.igrejaId,
+        'Escola Biblica Dominical'
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
-        `SELECT * FROM ministerios WHERE igreja_id = ? AND nome = ?`,
-        [ministerio.igrejaId, ministerio.nome]
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT * FROM ministerios WHERE igreja_id = ? AND nome = ?',
+        [mockMinisterio.igrejaId, 'Escola Biblica Dominical']
       );
 
-      expect(result).toEqual(null);
+      expect(result).toEqual([]);
     });
   });
 
   describe('Testes do ministerioModel.verificarMinisterioId', () => {
-    test('Deve retornar true se encontrar o ministerior', async () => {
-      const mockMinisterio = {
-        id: 1,
-        nome: 'Grupo de Louvor',
-        igreja_id: 4,
-      };
+    test('Deve retornar true se encontrar o ministerio', async () => {
+      const mockQuery = jest.fn().mockResolvedValue([[{ id: 1 }]]);
 
-      const mock = {
-        ministerioId: 1,
-        igrejaId: 4,
-      };
-
-      const connection = {
-        query: jest.fn().mockResolvedValue([[mockMinisterio]]),
-      };
+      const ministerioModel = new MinisterioModel({ query: mockQuery });
 
       const result = await ministerioModel.verificarMinisterioId(
-        mock.igrejaId,
-        mock.ministerioId,
-        connection
+        mockMinisterio.igrejaId,
+        mockMinisterio.id
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
-        `SELECT * FROM ministerios WHERE igreja_id = ? AND id = ?`,
-        [mock.igrejaId, mock.ministerioId]
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT 1 FROM ministerios WHERE igreja_id = ? AND id = ?',
+        [mockMinisterio.igrejaId, mockMinisterio.id]
       );
 
-      expect(result).toEqual(true);
+      expect(result).toBe(true);
     });
 
-    test('Deve tornar false se não encontrar o ministerio', async () => {
-      const mock = {
-        ministerioId: 1,
-        igrejaId: 4,
-      };
+    test('Deve retornar false se nao encontrar o ministerio', async () => {
+      const mockQuery = jest.fn().mockResolvedValue([[]]);
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([[]]),
-      };
+      const ministerioModel = new MinisterioModel({ query: mockQuery });
 
       const result = await ministerioModel.verificarMinisterioId(
-        mock.igrejaId,
-        mock.ministerioId,
-        connection
+        mockMinisterio.igrejaId,
+        mockMinisterio.id
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
-        `SELECT * FROM ministerios WHERE igreja_id = ? AND id = ?`,
-        [mock.igrejaId, mock.ministerioId]
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT 1 FROM ministerios WHERE igreja_id = ? AND id = ?',
+        [mockMinisterio.igrejaId, mockMinisterio.id]
       );
 
-      expect(result).toEqual(false);
+      expect(result).toBe(false);
     });
   });
 
   describe('Testes do ministerioModel.verificarMinisterio', () => {
     test('Deve retornar true se o ministerio existir', async () => {
-      const mockMinisterio = [
-        {
-          id: 10,
-          nome: 'Escola Bíblica Dominical',
-          igreja_id: 2,
-        },
-      ];
+      const mockQuery = jest.fn().mockResolvedValue([[{ id: 10 }]]);
 
-      const mock = {
-        igrejaId: 2,
-        nomeMinisterio: 'Escola Bíblica Dominical',
-      };
-
-      const connection = {
-        query: jest.fn().mockResolvedValue([mockMinisterio]),
-      };
+      const ministerioModel = new MinisterioModel({ query: mockQuery });
 
       const result = await ministerioModel.verificarMinisterio(
-        mock.igrejaId,
-        mock.nomeMinisterio,
-        connection
+        mockMinisterio.igrejaId,
+        'Escola Biblica Dominical'
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
-        `SELECT * FROM ministerios WHERE igreja_id = ? AND nome = ?`,
-        [mock.igrejaId, mock.nomeMinisterio]
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT 1 FROM ministerios WHERE igreja_id = ? AND nome = ?',
+        [mockMinisterio.igrejaId, 'Escola Biblica Dominical']
       );
 
-      expect(result).toEqual(true);
+      expect(result).toBe(true);
     });
 
-    test('Deve retornar false se o ministerio não existir', async () => {
-      const mock = {
-        igrejaId: 2,
-        nomeMinisterio: 'Escola Bíblica Dominical',
-      };
+    test('Deve retornar false se o ministerio nao existir', async () => {
+      const mockQuery = jest.fn().mockResolvedValue([[]]);
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([[]]),
-      };
+      const ministerioModel = new MinisterioModel({ query: mockQuery });
 
       const result = await ministerioModel.verificarMinisterio(
-        mock.igrejaId,
-        mock.nomeMinisterio,
-        connection
+        mockMinisterio.igrejaId,
+        'Escola Biblica Dominical'
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
-        `SELECT * FROM ministerios WHERE igreja_id = ? AND nome = ?`,
-        [mock.igrejaId, mock.nomeMinisterio]
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT 1 FROM ministerios WHERE igreja_id = ? AND nome = ?',
+        [mockMinisterio.igrejaId, 'Escola Biblica Dominical']
       );
 
-      expect(result).toEqual(false);
+      expect(result).toBe(false);
     });
   });
 
   describe('Testes do ministerioModel.buscarMembrosMinisterio', () => {
-    test('Retorna os membros se o id do ministerio existir no id da Igreja', async () => {
+    test('Retorna os membros quando o ministerio existe na igreja', async () => {
       const mockMembros = [
         {
           Nome: 'Juliana Pereira',
           IdMinisterio: 2,
-          Ministerio: 'Escola Bíblica Dominical',
-          Função: 'Líder',
-          idIgreja: 2,
-        },
-        {
-          Nome: 'Carlos Silva',
-          IdMinisterio: 2,
-          Ministerio: 'Escola Bíblica Dominical',
-          Função: 'Líder',
+          Ministerio: 'Escola Biblica Dominical',
+          Funcao: 'Lider',
           idIgreja: 2,
         },
       ];
 
-      const mock = {
-        ministerioId: 2,
-        igrejaId: 2,
-      };
+      const mockQuery = jest.fn().mockResolvedValue([mockMembros]);
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([mockMembros]),
-      };
+      const ministerioModel = new MinisterioModel({ query: mockQuery });
 
       const result = await ministerioModel.buscarMembrosMinisterio(
-        mock.ministerioId,
-        mock.igrejaId,
-        connection
+        mockMinisterio.id,
+        mockMinisterio.igrejaId
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
+      expect(mockQuery).toHaveBeenCalledWith(
         `SELECT
     memb.nome AS Nome,
     mini.id AS IdMinisterio,
     mini.nome AS Ministerio,
-    mm.funcao AS Função,
+    mm.funcao AS Funcao,
     memb.igreja_id AS idIgreja
 FROM
     membros memb
         JOIN
-    ministerios_membros mm ON memb.id = mm.id
+    ministerios_membros mm ON memb.id = mm.membros_id
         JOIN
     ministerios mini ON mini.id = mm.ministerios_id
 WHERE
     mini.id = ? AND mini.igreja_id = ?`,
-        [mock.ministerioId, mock.igrejaId]
+        [mockMinisterio.id, mockMinisterio.igrejaId]
       );
 
       expect(result).toEqual(mockMembros);
     });
 
-    test('Retorna null se o id do ministerio não existir no id da Igreja', async () => {
-      const mock = {
-        ministerioId: 2,
-        igrejaId: 2,
-      };
+    test('Retorna array vazio quando o ministerio nao possui membros', async () => {
+      const mockQuery = jest.fn().mockResolvedValue([[]]);
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([[]]),
-      };
+      const ministerioModel = new MinisterioModel({ query: mockQuery });
 
       const result = await ministerioModel.buscarMembrosMinisterio(
-        mock.ministerioId,
-        mock.igrejaId,
-        connection
+        mockMinisterio.id,
+        mockMinisterio.igrejaId
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
+      expect(mockQuery).toHaveBeenCalledWith(
         `SELECT
     memb.nome AS Nome,
     mini.id AS IdMinisterio,
     mini.nome AS Ministerio,
-    mm.funcao AS Função,
+    mm.funcao AS Funcao,
     memb.igreja_id AS idIgreja
 FROM
     membros memb
         JOIN
-    ministerios_membros mm ON memb.id = mm.id
+    ministerios_membros mm ON memb.id = mm.membros_id
         JOIN
     ministerios mini ON mini.id = mm.ministerios_id
 WHERE
     mini.id = ? AND mini.igreja_id = ?`,
-        [mock.ministerioId, mock.igrejaId]
+        [mockMinisterio.id, mockMinisterio.igrejaId]
       );
 
-      expect(result).toEqual(null);
+      expect(result).toEqual([]);
     });
   });
 
   describe('Testes do ministerioModel.verificarMembroMinisterio', () => {
-    test('Deve retornar true se o membro está cadastrado no ministério', async () => {
+    test('Deve retornar true se o membro esta cadastrado no ministerio', async () => {
       const mockMembro = {
-        id: 6,
-        ministerios_id: 2,
-        membros_id: 2,
-        funcao: 'Líder',
-      };
-
-      const mock = {
         ministerioId: 2,
-        membroId: 2,
+        membroId: 4,
       };
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([[mockMembro]]),
-      };
+      const mockQuery = jest.fn().mockResolvedValue([[{ id: 6 }]]);
+
+      const ministerioModel = new MinisterioModel({ query: mockQuery });
 
       const result = await ministerioModel.verificarMembroMinisterio(
-        mock.ministerioId,
-        mock.membroId,
-        connection
+        mockMembro.ministerioId,
+        mockMembro.membroId
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
-        `SELECT * FROM ministerios_membros WHERE ministerios_id = ? AND membros_id = ?`,
-        [mock.ministerioId, mock.membroId]
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT 1 FROM ministerios_membros WHERE ministerios_id = ? AND membros_id = ?',
+        [mockMembro.ministerioId, mockMembro.membroId]
       );
 
-      expect(result).toEqual(true);
+      expect(result).toBe(true);
     });
 
-    test('Deve retornar false se o membro não está cadastrado no ministério', async () => {
-      const mock = {
+    test('Deve retornar false se o membro nao esta cadastrado no ministerio', async () => {
+      const mockMembro = {
         ministerioId: 2,
-        membroId: 2,
+        membroId: 4,
       };
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([[]]),
-      };
+      const mockQuery = jest.fn().mockResolvedValue([[]]);
+
+      const ministerioModel = new MinisterioModel({ query: mockQuery });
 
       const result = await ministerioModel.verificarMembroMinisterio(
-        mock.ministerioId,
-        mock.membroId,
-        connection
+        mockMembro.ministerioId,
+        mockMembro.membroId
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
-        `SELECT * FROM ministerios_membros WHERE ministerios_id = ? AND membros_id = ?`,
-        [mock.ministerioId, mock.membroId]
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT 1 FROM ministerios_membros WHERE ministerios_id = ? AND membros_id = ?',
+        [mockMembro.ministerioId, mockMembro.membroId]
       );
 
-      expect(result).toEqual(false);
+      expect(result).toBe(false);
     });
   });
 
   describe('Testes do ministerioModel.cadastrarMembroMinisterio', () => {
-    test('Deve retornar o id do membro cadastrado', async () => {
+    test('Deve retornar o id da relacao cadastrada', async () => {
       const mockMembro = {
         ministerioId: 2,
         membroId: 4,
         funcao: 'Membro',
       };
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([{ insertId: 5 }]),
-      };
+      const mockCadastroId = 5;
+      const mockQuery = jest
+        .fn()
+        .mockResolvedValue([{ insertId: mockCadastroId }]);
+
+      const ministerioModel = new MinisterioModel({ query: mockQuery });
 
       const result = await ministerioModel.cadastrarMembroMinisterio(
         mockMembro.ministerioId,
         mockMembro.membroId,
-        mockMembro.funcao,
-        connection
+        mockMembro.funcao
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
-        `INSERT INTO ministerios_membros (ministerios_id, membros_id, funcao) VALUES (?, ?, ?)`,
+      expect(mockQuery).toHaveBeenCalledWith(
+        'INSERT INTO ministerios_membros (ministerios_id, membros_id, funcao) VALUES (?, ?, ?)',
         [mockMembro.ministerioId, mockMembro.membroId, mockMembro.funcao]
       );
 
-      expect(result).toEqual(5);
+      expect(result).toEqual(mockCadastroId);
+    });
+  });
+
+  describe('Testes do ministerioModel.deletarMinisterioMembro', () => {
+    test('Deve retornar a quantidade de registros removidos', async () => {
+      const mockMembro = {
+        membroId: 4,
+        igrejaId: 2,
+      };
+
+      const mockQuery = jest.fn().mockResolvedValue([{ affectedRows: 1 }]);
+
+      const ministerioModel = new MinisterioModel({ query: mockQuery });
+
+      const result = await ministerioModel.deletarMinisterioMembro(
+        mockMembro.membroId,
+        mockMembro.igrejaId
+      );
+
+      expect(mockQuery).toHaveBeenCalledWith(
+        'DELETE mm FROM ministerios_membros mm JOIN ministerios m ON mm.ministerios_id = m.id JOIN igreja i ON m.igreja_id = i.id WHERE mm.membros_id = ? AND i.id = ?',
+        [mockMembro.membroId, mockMembro.igrejaId]
+      );
+
+      expect(result).toBe(1);
     });
   });
 });

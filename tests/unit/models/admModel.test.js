@@ -1,5 +1,5 @@
 import { beforeEach, jest } from '@jest/globals';
-import admModel from '../../../src/models/admModel.js';
+import AdmModel from '../../../src/models/adm.model.js';
 
 const mockAdm = {
   id: 6,
@@ -16,19 +16,20 @@ beforeEach(() => {
 describe('Testes do admModel', () => {
   describe('Testes do admModel.cadastrarAdm', () => {
     test('Deve retornar o id do adm cadastrado', async () => {
-      const connection = {
-        query: jest.fn().mockResolvedValue([{ insertId: 6 }]),
-      };
+      const mockQuery = jest.fn().mockResolvedValue([{ insertId: mockAdm.id }]);
+
+      const admModel = new AdmModel({
+        query: mockQuery,
+      });
 
       const result = await admModel.cadastrarAdm(
         mockAdm.igrejaId,
         mockAdm.membrosId,
         mockAdm.login,
-        mockAdm.senha,
-        connection
+        mockAdm.senha
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
+      expect(mockQuery).toHaveBeenCalledWith(
         'INSERT INTO membros_adm (igreja_id, membros_id, login, senha) VALUES (?, ?, ?, ?)',
         [mockAdm.igrejaId, mockAdm.membrosId, mockAdm.login, mockAdm.senha]
       );
@@ -37,43 +38,37 @@ describe('Testes do admModel', () => {
     });
   });
 
-  describe('Testes do admModel.buscarADM', () => {
+  describe('Testes do admModel.buscarAdm', () => {
     test('Retorna o adm cadastrado', async () => {
-      const connection = {
-        query: jest.fn().mockResolvedValue([[mockAdm]]),
-      };
+      const mockQuery = jest.fn().mockResolvedValue([[mockAdm]]);
 
-      const result = await admModel.buscarADM(
-        mockAdm.login,
-        mockAdm.url,
-        connection
-      );
+      const admModel = new AdmModel({
+        query: mockQuery,
+      });
 
-      expect(connection.query).toHaveBeenCalledWith(
-        'SELECT membros_adm.id, login, senha, url FROM membros_adm JOIN igreja ON igreja.id = membros_adm.igreja_id WHERE login = ? AND url = ?',
+      const result = await admModel.buscarAdm(mockAdm.login, mockAdm.url);
+
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT membros_adm.id, membros_adm.login, membros_adm.senha, igreja.url FROM membros_adm JOIN igreja ON igreja.id = membros_adm.igreja_id WHERE membros_adm.login = ? AND igreja.url = ?',
         [mockAdm.login, mockAdm.url]
       );
 
       expect(result).toEqual(mockAdm);
     });
 
-    test('Retorna false caso o adm não esteja cadastrado', async () => {
-      const connection = {
-        query: jest.fn().mockResolvedValue([[]]),
-      };
+    test('Retorna null caso o adm não esteja cadastrado', async () => {
+      const mockQuery = jest.fn().mockResolvedValue([[]]);
 
-      const result = await admModel.buscarADM(
-        mockAdm.login,
-        mockAdm.url,
-        connection
-      );
+      const admModel = new AdmModel({ query: mockQuery });
 
-      expect(connection.query).toHaveBeenCalledWith(
-        'SELECT membros_adm.id, login, senha, url FROM membros_adm JOIN igreja ON igreja.id = membros_adm.igreja_id WHERE login = ? AND url = ?',
+      const result = await admModel.buscarAdm(mockAdm.login, mockAdm.url);
+
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT membros_adm.id, membros_adm.login, membros_adm.senha, igreja.url FROM membros_adm JOIN igreja ON igreja.id = membros_adm.igreja_id WHERE membros_adm.login = ? AND igreja.url = ?',
         [mockAdm.login, mockAdm.url]
       );
 
-      expect(result).toBe(false);
+      expect(result).toBe(null);
     });
   });
 
@@ -85,19 +80,18 @@ describe('Testes do admModel', () => {
         id: 71,
       };
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([{ affectedRows: 1 }]),
-      };
+      const mockQuery = jest.fn().mockResolvedValue([{ affectedRows: 1 }]);
+
+      const admModel = new AdmModel({ query: mockQuery });
 
       const result = await admModel.alterarSenhaAdm(
         mockAdm.login,
         mockAdm.id,
-        mockAdm.novaSenha,
-        connection
+        mockAdm.novaSenha
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
-        'UPDATE membros_adm SET senha = ? WHERE login = ? AND id = ?',
+      expect(mockQuery).toHaveBeenCalledWith(
+        'UPDATE membros_adm SET senha = ? WHERE membros_adm.login = ? AND membros_adm.id = ?',
         [mockAdm.novaSenha, mockAdm.login, mockAdm.id]
       );
 

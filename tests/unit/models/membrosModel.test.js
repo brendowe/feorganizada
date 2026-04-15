@@ -1,58 +1,78 @@
-import { jest } from '@jest/globals';
-import membrosModel from '../../../src/models/membrosModel.js';
+import { beforeEach, jest } from '@jest/globals';
+import MembrosModel from '../../../src/models/membros.model.js';
+
+const mockMembro = {
+  id: 71,
+  igrejaId: 2,
+  nome: 'Carlos Silva',
+  nascimento: '1985-07-23',
+};
+
+const mockEndereco = {
+  estado: 'SP',
+  cidade: 'Sao Paulo',
+  bairro: 'Vila Nova',
+  rua: 'Rua dos Lirios',
+  complemento: 'Apartamento 101',
+};
+
+const mockMembroDetalhado = {
+  id: 71,
+  nome: 'Carlos Silva',
+  nascimento: '1985-07-23',
+  nomeIgreja: 'Igreja Esperanca Viva',
+  url: 'esperanca-viva-sp',
+  estado: 'SP',
+  cidade: 'Sao Paulo',
+  bairro: 'Jardim das Flores',
+  rua: 'Rua das Oliveiras',
+  complemento: 'Proximo a praca central',
+  telefone: '(11) 99876-5432',
+};
+
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
 describe('Testes do membrosModel', () => {
   describe('Testes do membrosModel.cadastrarMembro', () => {
     test('Deve retornar o id do membro cadastrado', async () => {
-      const mockMembro = {
-        nome: 'Carlos Silva',
-        nascimento: '1985-07-23',
-        igrejaId: 71,
-      };
+      const mockQuery = jest
+        .fn()
+        .mockResolvedValue([{ insertId: mockMembro.id }]);
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([{ insertId: 6 }]),
-      };
+      const membrosModel = new MembrosModel({ query: mockQuery });
 
       const result = await membrosModel.cadastrarMembro(
         mockMembro.igrejaId,
         mockMembro.nome,
-        mockMembro.nascimento,
-        connection
+        mockMembro.nascimento
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
+      expect(mockQuery).toHaveBeenCalledWith(
         'INSERT INTO membros (nome, nascimento, igreja_id) VALUES (?, ?, ?)',
         [mockMembro.nome, mockMembro.nascimento, mockMembro.igrejaId]
       );
 
-      expect(result).toEqual(6);
+      expect(result).toEqual(mockMembro.id);
     });
   });
 
   describe('Testes do membrosModel.cadastrarEndereco', () => {
-    test('Deve retornar o id do endereço cadastrado', async () => {
-      const mockEndereco = {
-        estado: 'SP',
-        cidade: 'São Paulo',
-        bairro: 'Vila Nova',
-        rua: 'Rua dos Lírios',
-        complemento: 'Apartamento 101',
-      };
+    test('Deve retornar o id do endereco cadastrado', async () => {
+      const mockEnderecoId = 10;
+      const mockQuery = jest
+        .fn()
+        .mockResolvedValue([{ insertId: mockEnderecoId }]);
 
-      const membrosId = 6;
-
-      const connection = {
-        query: jest.fn().mockResolvedValue([{ insertId: 10 }]),
-      };
+      const membrosModel = new MembrosModel({ query: mockQuery });
 
       const result = await membrosModel.cadastrarEndereco(
-        membrosId,
-        mockEndereco,
-        connection
+        mockMembro.id,
+        mockEndereco
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
+      expect(mockQuery).toHaveBeenCalledWith(
         'INSERT INTO membros_endereco (estado, cidade, bairro, rua, complemento, membros_id) VALUES (?, ?, ?, ?, ?, ?)',
         [
           mockEndereco.estado,
@@ -60,64 +80,49 @@ describe('Testes do membrosModel', () => {
           mockEndereco.bairro,
           mockEndereco.rua,
           mockEndereco.complemento,
-          membrosId,
+          mockMembro.id,
         ]
       );
 
-      expect(result).toEqual(10);
+      expect(result).toEqual(mockEnderecoId);
     });
   });
 
   describe('Testes do membrosModel.cadastrarTelefone', () => {
     test('Deve retornar o id do telefone cadastrado', async () => {
-      const mockTelefone = {
-        telefone: '(11) 99876-5432',
-        id: 15,
-      };
+      const mockTelefone = '(11) 99876-5432';
+      const mockTelefoneId = 666;
+      const mockQuery = jest
+        .fn()
+        .mockResolvedValue([{ insertId: mockTelefoneId }]);
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([{ insertId: 666 }]),
-      };
+      const membrosModel = new MembrosModel({ query: mockQuery });
 
       const result = await membrosModel.cadastrarTelefone(
-        mockTelefone.id,
-        mockTelefone.telefone,
-        connection
+        mockMembro.id,
+        mockTelefone
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
+      expect(mockQuery).toHaveBeenCalledWith(
         'INSERT INTO membros_telefone (telefone, membros_id) VALUES (?, ?)',
-        [mockTelefone.telefone, mockTelefone.id]
+        [mockTelefone, mockMembro.id]
       );
 
-      expect(result).toEqual(666);
+      expect(result).toEqual(mockTelefoneId);
     });
   });
 
   describe('Testes do membrosModel.buscarMembros', () => {
-    test('Deve retornar uma array com os membros cadastrados naquela URL de Igreja', async () => {
+    test('Deve retornar um array com os membros cadastrados na url da igreja', async () => {
       const mockUrl = 'esperanca-viva-sp';
-      const mockMembros = {
-        id: 1,
-        nome: 'Carlos Silva',
-        nascimento: '1985-07-23',
-        nomeIgreja: 'Igreja Esperança Viva',
-        url: 'esperanca-viva-sp',
-        estado: 'SP',
-        cidade: 'São Paulo',
-        bairro: 'Jardim das Flores',
-        rua: 'Rua das Oliveiras',
-        complemento: 'Próximo à praça central',
-        telefone: '(11) 99876-5432',
-      };
+      const mockMembros = [mockMembroDetalhado];
+      const mockQuery = jest.fn().mockResolvedValue([mockMembros]);
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([mockMembros]),
-      };
+      const membrosModel = new MembrosModel({ query: mockQuery });
 
-      const result = await membrosModel.buscarMembros(mockUrl, connection);
+      const result = await membrosModel.buscarMembros(mockUrl);
 
-      expect(connection.query).toHaveBeenCalledWith(
+      expect(mockQuery).toHaveBeenCalledWith(
         `SELECT
     m.id,
     m.nome,
@@ -139,7 +144,7 @@ FROM
         JOIN
     membros_telefone mt ON mt.membros_id = m.id
 WHERE
-    url = ? `,
+    i.url = ? `,
         [mockUrl]
       );
 
@@ -148,36 +153,15 @@ WHERE
   });
 
   describe('Testes do membrosModel.buscarMembro', () => {
-    test('Deve retornar o membro cadastrado naquela URL de Igreja e que possua aquele id', async () => {
-      const mockMembro = {
-        url: 'esperanca-viva-sp',
-        id: 71,
-      };
-      const mockMembros = {
-        id: 71,
-        nome: 'Carlos Silva',
-        nascimento: '1985-07-23',
-        nomeIgreja: 'Igreja Esperança Viva',
-        url: 'esperanca-viva-sp',
-        estado: 'SP',
-        cidade: 'São Paulo',
-        bairro: 'Jardim das Flores',
-        rua: 'Rua das Oliveiras',
-        complemento: 'Próximo à praça central',
-        telefone: '(11) 99876-5432',
-      };
+    test('Deve retornar o membro da url informada com o id informado', async () => {
+      const mockUrl = 'esperanca-viva-sp';
+      const mockQuery = jest.fn().mockResolvedValue([[mockMembroDetalhado]]);
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([[mockMembros]]),
-      };
+      const membrosModel = new MembrosModel({ query: mockQuery });
 
-      const result = await membrosModel.buscarMembro(
-        mockMembro.url,
-        mockMembro.id,
-        connection
-      );
+      const result = await membrosModel.buscarMembro(mockUrl, mockMembro.id);
 
-      expect(connection.query).toHaveBeenCalledWith(
+      expect(mockQuery).toHaveBeenCalledWith(
         `SELECT
     m.id,
     m.nome,
@@ -199,30 +183,22 @@ FROM
         JOIN
     membros_telefone mt ON mt.membros_id = m.id
 WHERE
-    url = ? AND m.id = ?`,
-        [mockMembro.url, mockMembro.id]
+    i.url = ? AND m.id = ?`,
+        [mockUrl, mockMembro.id]
       );
 
-      expect(result).toEqual(mockMembros);
+      expect(result).toEqual(mockMembroDetalhado);
     });
 
-    test('Deve retornar NULL caso o membro ou a Igreja estejam errados', async () => {
-      const mockMembro = {
-        url: 'esperanca-viva-sp',
-        id: 71,
-      };
+    test('Deve retornar undefined caso nao encontre o membro', async () => {
+      const mockUrl = 'esperanca-viva-sp';
+      const mockQuery = jest.fn().mockResolvedValue([[]]);
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([[]]),
-      };
+      const membrosModel = new MembrosModel({ query: mockQuery });
 
-      const result = await membrosModel.buscarMembro(
-        mockMembro.url,
-        mockMembro.id,
-        connection
-      );
+      const result = await membrosModel.buscarMembro(mockUrl, mockMembro.id);
 
-      expect(connection.query).toHaveBeenCalledWith(
+      expect(mockQuery).toHaveBeenCalledWith(
         `SELECT
     m.id,
     m.nome,
@@ -244,16 +220,16 @@ FROM
         JOIN
     membros_telefone mt ON mt.membros_id = m.id
 WHERE
-    url = ? AND m.id = ?`,
-        [mockMembro.url, mockMembro.id]
+    i.url = ? AND m.id = ?`,
+        [mockUrl, mockMembro.id]
       );
 
-      expect(result).toEqual(null);
+      expect(result).toBeUndefined();
     });
   });
 
   describe('Testes do membrosModel.buscarAniversariantes', () => {
-    test('Deve retornar todos os aniversariantes de um determinado mês', async () => {
+    test('Deve retornar os aniversariantes de um determinado mes', async () => {
       const mockInfos = {
         url: 'esperanca-viva-sp',
         mes: 5,
@@ -272,25 +248,18 @@ WHERE
           nascimento: '2001-05-22 00:00:00',
           telefone: '(71) 91234-5678',
         },
-        {
-          id: 3,
-          nome: 'Brendo Washington 22222',
-          nascimento: '2001-05-22 00:00:00',
-          telefone: '(71) 91234-5678',
-        },
       ];
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([mockAniversariantes]),
-      };
+      const mockQuery = jest.fn().mockResolvedValue([mockAniversariantes]);
+
+      const membrosModel = new MembrosModel({ query: mockQuery });
 
       const result = await membrosModel.buscarAniversariantes(
         mockInfos.url,
-        mockInfos.mes,
-        connection
+        mockInfos.mes
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
+      expect(mockQuery).toHaveBeenCalledWith(
         `SELECT
     m.id,
     m.nome,
@@ -303,11 +272,32 @@ FROM
         JOIN
     membros_telefone mt ON mt.membros_id = m.id
 WHERE
-    url = ? AND MONTH (m.nascimento) = ?`,
+    i.url = ? AND MONTH (m.nascimento) = ?`,
         [mockInfos.url, mockInfos.mes]
       );
 
       expect(result).toEqual(mockAniversariantes);
+    });
+  });
+
+  describe('Testes do membrosModel.deletarMembro', () => {
+    test('Deve retornar a quantidade de linhas afetadas ao deletar o membro', async () => {
+      const mockQuery = jest.fn().mockResolvedValue([{ affectedRows: 1 }]);
+
+      const membrosModel = new MembrosModel({ query: mockQuery });
+
+      const result = await membrosModel.deletarMembro(
+        mockMembro.igrejaId,
+        mockMembro.id
+      );
+
+      expect(mockQuery).toHaveBeenCalledWith(
+        `DELETE FROM membros
+WHERE igreja_id = ? AND id = ?`,
+        [mockMembro.igrejaId, mockMembro.id]
+      );
+
+      expect(result).toBe(1);
     });
   });
 });
