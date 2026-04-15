@@ -125,24 +125,6 @@ WHERE igreja_id = ? AND id = ?`,
 
     return result.affectedRows;
   }
-
-  async deletarEndereco(id, igrejaId) {
-    const [result] = await this.connection.query(
-      `DELETE me FROM membros_endereco me join membros m on me.membros_id = m.id join igreja i on m.igreja_id = i.id
-WHERE me.membros_id = ? AND i.id = ?`,
-      [id, igrejaId]
-    );
-    return result.affectedRows;
-  }
-
-  async deletarTelefone(id, igrejaId) {
-    const [result] = await this.connection.query(
-      `DELETE mt FROM membros_telefone mt join membros m on mt.membros_id = m.id join igreja i on m.igreja_id = i.id
-WHERE mt.membros_id = ? AND i.id = ?`,
-      [id, igrejaId]
-    );
-    return result.affectedRows;
-  }
 }
 
 export default MembrosModel;

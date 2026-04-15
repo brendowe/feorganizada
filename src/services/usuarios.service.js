@@ -129,7 +129,6 @@ class Usuarios {
       const membrosModel = new MembrosModel(connection);
       const igrejaModel = new IgrejaModel(connection);
       const admModel = new AdmModel(connection);
-      const ministeriosModel = new MinisteriosModel(connection);
 
       await connection.beginTransaction();
 
@@ -146,10 +145,11 @@ class Usuarios {
         );
       }
 
-      await membrosModel.deletarEndereco(id, igrejaId);
-      await membrosModel.deletarTelefone(id, igrejaId);
-      await ministeriosModel.deletarMinisterioMembro(id, igrejaId);
-      await membrosModel.deletarMembro(igrejaId, id);
+      const result = await membrosModel.deletarMembro(igrejaId, id);
+
+      if (result.affectedRows === 0) {
+        throw new AppError('Membro não encontrado', 404);
+      }
 
       await connection.commit();
       return 'Usuário deletado com sucesso';
@@ -159,7 +159,9 @@ class Usuarios {
       }
       throw error;
     } finally {
-      connection.release();
+      if (connection) {
+        connection.release();
+      }
     }
   }
 }
