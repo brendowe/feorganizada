@@ -76,7 +76,7 @@ describe('Testes do usuariosService.cadastrarMembro', () => {
     expect(mockConnection.commit).toHaveBeenCalledTimes(1);
     expect(mockConnection.rollback).not.toHaveBeenCalled();
     expect(mockConnection.release).toHaveBeenCalledTimes(1);
-    expect(result).toBe('usuário cadastrado com sucesso');
+    expect(result).toBe(4);
   });
 
   test('Deve lançar AppError se igreja não existir', async () => {

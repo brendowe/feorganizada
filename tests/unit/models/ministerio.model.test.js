@@ -26,7 +26,7 @@ describe('Testes do ministerioModel', () => {
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'INSERT INTO ministerios (nome, igreja_id) VALUES (?, ?)',
+        'INSERT INTO ministerio (nome, igreja_id) VALUES (?, ?)',
         [mockMinisterio.nome, mockMinisterio.igrejaId]
       );
 
@@ -51,7 +51,7 @@ describe('Testes do ministerioModel', () => {
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'SELECT * FROM ministerios WHERE igreja_id = ?',
+        'SELECT * FROM ministerio WHERE igreja_id = ?',
         [mockMinisterio.igrejaId]
       );
 
@@ -79,7 +79,7 @@ describe('Testes do ministerioModel', () => {
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'SELECT * FROM ministerios WHERE igreja_id = ? AND nome = ?',
+        'SELECT * FROM ministerio WHERE igreja_id = ? AND nome = ?',
         [mockMinisterio.igrejaId, 'Escola Biblica Dominical']
       );
 
@@ -97,7 +97,7 @@ describe('Testes do ministerioModel', () => {
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'SELECT * FROM ministerios WHERE igreja_id = ? AND nome = ?',
+        'SELECT * FROM ministerio WHERE igreja_id = ? AND nome = ?',
         [mockMinisterio.igrejaId, 'Escola Biblica Dominical']
       );
 
@@ -117,7 +117,7 @@ describe('Testes do ministerioModel', () => {
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'SELECT 1 FROM ministerios WHERE igreja_id = ? AND id = ?',
+        'SELECT 1 FROM ministerio WHERE igreja_id = ? AND id = ?',
         [mockMinisterio.igrejaId, mockMinisterio.id]
       );
 
@@ -135,7 +135,7 @@ describe('Testes do ministerioModel', () => {
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'SELECT 1 FROM ministerios WHERE igreja_id = ? AND id = ?',
+        'SELECT 1 FROM ministerio WHERE igreja_id = ? AND id = ?',
         [mockMinisterio.igrejaId, mockMinisterio.id]
       );
 
@@ -155,7 +155,7 @@ describe('Testes do ministerioModel', () => {
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'SELECT 1 FROM ministerios WHERE igreja_id = ? AND nome = ?',
+        'SELECT 1 FROM ministerio WHERE igreja_id = ? AND nome = ?',
         [mockMinisterio.igrejaId, 'Escola Biblica Dominical']
       );
 
@@ -173,7 +173,7 @@ describe('Testes do ministerioModel', () => {
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'SELECT 1 FROM ministerios WHERE igreja_id = ? AND nome = ?',
+        'SELECT 1 FROM ministerio WHERE igreja_id = ? AND nome = ?',
         [mockMinisterio.igrejaId, 'Escola Biblica Dominical']
       );
 
@@ -210,11 +210,11 @@ describe('Testes do ministerioModel', () => {
     mm.funcao AS Funcao,
     memb.igreja_id AS idIgreja
 FROM
-    membros memb
+    membro memb
         JOIN
-    ministerios_membros mm ON memb.id = mm.membros_id
+    ministerio_membro mm ON memb.id = mm.membro_id
         JOIN
-    ministerios mini ON mini.id = mm.ministerios_id
+    ministerio mini ON mini.id = mm.ministerio_id
 WHERE
     mini.id = ? AND mini.igreja_id = ?`,
         [mockMinisterio.id, mockMinisterio.igrejaId]
@@ -241,11 +241,11 @@ WHERE
     mm.funcao AS Funcao,
     memb.igreja_id AS idIgreja
 FROM
-    membros memb
+    membro memb
         JOIN
-    ministerios_membros mm ON memb.id = mm.membros_id
+    ministerio_membro mm ON memb.id = mm.membro_id
         JOIN
-    ministerios mini ON mini.id = mm.ministerios_id
+    ministerio mini ON mini.id = mm.ministerio_id
 WHERE
     mini.id = ? AND mini.igreja_id = ?`,
         [mockMinisterio.id, mockMinisterio.igrejaId]
@@ -272,7 +272,7 @@ WHERE
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'SELECT 1 FROM ministerios_membros WHERE ministerios_id = ? AND membros_id = ?',
+        'SELECT 1 FROM ministerio_membro WHERE ministerio_id = ? AND membro_id = ?',
         [mockMembro.ministerioId, mockMembro.membroId]
       );
 
@@ -295,7 +295,7 @@ WHERE
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'SELECT 1 FROM ministerios_membros WHERE ministerios_id = ? AND membros_id = ?',
+        'SELECT 1 FROM ministerio_membro WHERE ministerio_id = ? AND membro_id = ?',
         [mockMembro.ministerioId, mockMembro.membroId]
       );
 
@@ -325,7 +325,7 @@ WHERE
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'INSERT INTO ministerios_membros (ministerios_id, membros_id, funcao) VALUES (?, ?, ?)',
+        'INSERT INTO ministerio_membro (ministerio_id, membro_id, funcao) VALUES (?, ?, ?)',
         [mockMembro.ministerioId, mockMembro.membroId, mockMembro.funcao]
       );
 
@@ -350,7 +350,7 @@ WHERE
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'DELETE mm FROM ministerios_membros mm JOIN ministerios m ON mm.ministerios_id = m.id JOIN igreja i ON m.igreja_id = i.id WHERE mm.membros_id = ? AND i.id = ?',
+        'DELETE mm FROM ministerio_membro mm JOIN ministerio m ON mm.ministerio_id = m.id JOIN igreja i ON m.igreja_id = i.id WHERE mm.membro_id = ? AND i.id = ?',
         [mockMembro.membroId, mockMembro.igrejaId]
       );
 

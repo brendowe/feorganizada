@@ -30,7 +30,7 @@ describe('Testes do admModel', () => {
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'INSERT INTO membros_adm (igreja_id, membros_id, login, senha) VALUES (?, ?, ?, ?)',
+        'INSERT INTO membro_adm (igreja_id, membro_id, login, senha) VALUES (?, ?, ?, ?)',
         [mockAdm.igrejaId, mockAdm.membrosId, mockAdm.login, mockAdm.senha]
       );
 
@@ -49,7 +49,7 @@ describe('Testes do admModel', () => {
       const result = await admModel.buscarAdm(mockAdm.login, mockAdm.url);
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'SELECT membros_adm.id, membros_adm.login, membros_adm.senha, igreja.url FROM membros_adm JOIN igreja ON igreja.id = membros_adm.igreja_id WHERE membros_adm.login = ? AND igreja.url = ?',
+        'SELECT membro_adm.id, membro_adm.login, membro_adm.senha, igreja.url FROM membro_adm JOIN igreja ON igreja.id = membro_adm.igreja_id WHERE membro_adm.login = ? AND igreja.url = ?',
         [mockAdm.login, mockAdm.url]
       );
 
@@ -64,7 +64,7 @@ describe('Testes do admModel', () => {
       const result = await admModel.buscarAdm(mockAdm.login, mockAdm.url);
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'SELECT membros_adm.id, membros_adm.login, membros_adm.senha, igreja.url FROM membros_adm JOIN igreja ON igreja.id = membros_adm.igreja_id WHERE membros_adm.login = ? AND igreja.url = ?',
+        'SELECT membro_adm.id, membro_adm.login, membro_adm.senha, igreja.url FROM membro_adm JOIN igreja ON igreja.id = membro_adm.igreja_id WHERE membro_adm.login = ? AND igreja.url = ?',
         [mockAdm.login, mockAdm.url]
       );
 
@@ -91,7 +91,7 @@ describe('Testes do admModel', () => {
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'UPDATE membros_adm SET senha = ? WHERE membros_adm.login = ? AND membros_adm.id = ?',
+        'UPDATE membro_adm SET senha = ? WHERE membro_adm.login = ? AND membro_adm.id = ?',
         [mockAdm.novaSenha, mockAdm.login, mockAdm.id]
       );
 

@@ -35,6 +35,56 @@ beforeEach(() => {
 });
 
 describe('Testes do membrosModel', () => {
+  const queryBuscarMembros = [
+    'SELECT',
+    '    m.id,',
+    '    m.nome,',
+    '    m.nascimento,',
+    '    i.nome AS nomeIgreja,',
+    '    i.url,',
+    '    me.estado,',
+    '    me.cidade,',
+    '    me.bairro,',
+    '    me.rua,',
+    '    me.complemento,',
+    '    mt.telefone',
+    'FROM',
+    '    membro m',
+    '        JOIN',
+    '    igreja i ON i.id = m.igreja_id',
+    '        JOIN',
+    '    membro_endereco me ON me.membro_id = m.id',
+    '        JOIN',
+    '    membro_telefone mt ON mt.membro_id = m.id',
+    'WHERE',
+    '    i.url = ? ',
+  ].join('\n');
+
+  const queryBuscarMembro = [
+    'SELECT',
+    '    m.id,',
+    '    m.nome,',
+    '    m.nascimento,',
+    '    i.nome AS nomeIgreja,',
+    '    i.url,',
+    '    me.estado,',
+    '    me.cidade,',
+    '    me.bairro,',
+    '    me.rua,',
+    '    me.complemento,',
+    '    mt.telefone',
+    'FROM',
+    '    membro m',
+    '        JOIN',
+    '    igreja i ON i.id = m.igreja_id',
+    '        JOIN',
+    '    membro_endereco me ON me.membro_id = m.id',
+    '        JOIN',
+    '    membro_telefone mt ON mt.membro_id = m.id',
+    'WHERE',
+    '    i.url = ? AND m.id = ?',
+  ].join('\n');
+
   describe('Testes do membrosModel.cadastrarMembro', () => {
     test('Deve retornar o id do membro cadastrado', async () => {
       const mockQuery = jest
@@ -50,7 +100,7 @@ describe('Testes do membrosModel', () => {
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'INSERT INTO membros (nome, nascimento, igreja_id) VALUES (?, ?, ?)',
+        'INSERT INTO membro (nome, nascimento, igreja_id) VALUES (?, ?, ?)',
         [mockMembro.nome, mockMembro.nascimento, mockMembro.igrejaId]
       );
 
@@ -73,7 +123,7 @@ describe('Testes do membrosModel', () => {
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'INSERT INTO membros_endereco (estado, cidade, bairro, rua, complemento, membros_id) VALUES (?, ?, ?, ?, ?, ?)',
+        'INSERT INTO membro_endereco (estado, cidade, bairro, rua, complemento, membro_id) VALUES (?, ?, ?, ?, ?, ?)',
         [
           mockEndereco.estado,
           mockEndereco.cidade,
@@ -104,7 +154,7 @@ describe('Testes do membrosModel', () => {
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        'INSERT INTO membros_telefone (telefone, membros_id) VALUES (?, ?)',
+        'INSERT INTO membro_telefone (telefone, membro_id) VALUES (?, ?)',
         [mockTelefone, mockMembro.id]
       );
 
@@ -123,28 +173,7 @@ describe('Testes do membrosModel', () => {
       const result = await membrosModel.buscarMembros(mockUrl);
 
       expect(mockQuery).toHaveBeenCalledWith(
-        `SELECT
-    m.id,
-    m.nome,
-    m.nascimento,
-    i.nome AS nomeIgreja,
-    i.url,
-    me.estado,
-    me.cidade,
-    me.bairro,
-    me.rua,
-    me.complemento,
-    mt.telefone
-FROM
-    membros m
-        JOIN
-    igreja i ON i.id = m.igreja_id
-        JOIN
-    membros_endereco me ON me.membros_id = m.id
-        JOIN
-    membros_telefone mt ON mt.membros_id = m.id
-WHERE
-    i.url = ? `,
+        queryBuscarMembros,
         [mockUrl]
       );
 
@@ -162,28 +191,7 @@ WHERE
       const result = await membrosModel.buscarMembro(mockUrl, mockMembro.id);
 
       expect(mockQuery).toHaveBeenCalledWith(
-        `SELECT
-    m.id,
-    m.nome,
-    m.nascimento,
-    i.nome AS nomeIgreja,
-    i.url,
-    me.estado,
-    me.cidade,
-    me.bairro,
-    me.rua,
-    me.complemento,
-    mt.telefone
-FROM
-    membros m
-        JOIN
-    igreja i ON i.id = m.igreja_id
-        JOIN
-    membros_endereco me ON me.membros_id = m.id
-        JOIN
-    membros_telefone mt ON mt.membros_id = m.id
-WHERE
-    i.url = ? AND m.id = ?`,
+        queryBuscarMembro,
         [mockUrl, mockMembro.id]
       );
 
@@ -199,28 +207,7 @@ WHERE
       const result = await membrosModel.buscarMembro(mockUrl, mockMembro.id);
 
       expect(mockQuery).toHaveBeenCalledWith(
-        `SELECT
-    m.id,
-    m.nome,
-    m.nascimento,
-    i.nome AS nomeIgreja,
-    i.url,
-    me.estado,
-    me.cidade,
-    me.bairro,
-    me.rua,
-    me.complemento,
-    mt.telefone
-FROM
-    membros m
-        JOIN
-    igreja i ON i.id = m.igreja_id
-        JOIN
-    membros_endereco me ON me.membros_id = m.id
-        JOIN
-    membros_telefone mt ON mt.membros_id = m.id
-WHERE
-    i.url = ? AND m.id = ?`,
+        queryBuscarMembro,
         [mockUrl, mockMembro.id]
       );
 
@@ -266,11 +253,11 @@ WHERE
     m.nascimento,
     mt.telefone
 FROM
-    membros m
+    membro m
         JOIN
     igreja i ON i.id = m.igreja_id
         JOIN
-    membros_telefone mt ON mt.membros_id = m.id
+    membro_telefone mt ON mt.membro_id = m.id
 WHERE
     i.url = ? AND MONTH (m.nascimento) = ?`,
         [mockInfos.url, mockInfos.mes]
@@ -292,7 +279,7 @@ WHERE
       );
 
       expect(mockQuery).toHaveBeenCalledWith(
-        `DELETE FROM membros
+        `DELETE FROM membro
 WHERE igreja_id = ? AND id = ?`,
         [mockMembro.igrejaId, mockMembro.id]
       );

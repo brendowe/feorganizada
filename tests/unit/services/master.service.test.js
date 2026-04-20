@@ -11,7 +11,7 @@ const mockConnection = {
 const getConnectionMock = jest.fn(async () => mockConnection);
 
 const mockAdmModel = {
-  buscarADM: jest.fn(),
+  buscarAdm: jest.fn(),
   cadastrarAdm: jest.fn(),
   alterarSenhaAdm: jest.fn(),
 };
@@ -60,7 +60,7 @@ beforeEach(() => {
 
 describe('Testes do masterService.cadastrarAdm', () => {
   test('Deve cadastrar novo adm com sucesso', async () => {
-    mockAdmModel.buscarADM.mockResolvedValue(null);
+    mockAdmModel.buscarAdm.mockResolvedValue(null);
     mockIgrejaModel.igrejaId.mockResolvedValue(2);
     mockAdmModel.cadastrarAdm.mockResolvedValue(12);
 
@@ -89,7 +89,7 @@ describe('Testes do masterService.cadastrarAdm', () => {
   });
 
   test('Deve lançar AppError quando usuário já é adm', async () => {
-    mockAdmModel.buscarADM.mockResolvedValue({ id: 99, login: 'brendow' });
+    mockAdmModel.buscarAdm.mockResolvedValue({ id: 99, login: 'brendow' });
 
     await expect(
       masterService.cadastrarAdm(
@@ -112,7 +112,7 @@ describe('Testes do masterService.cadastrarAdm', () => {
 
   test('Deve fazer rollback e relançar erro inesperado', async () => {
     const erro = new Error('Falha ao cadastrar');
-    mockAdmModel.buscarADM.mockResolvedValue(null);
+    mockAdmModel.buscarAdm.mockResolvedValue(null);
     mockIgrejaModel.igrejaId.mockResolvedValue(2);
     mockAdmModel.cadastrarAdm.mockRejectedValue(erro);
 
@@ -134,7 +134,7 @@ describe('Testes do masterService.cadastrarAdm', () => {
 
 describe('Testes do masterService.atualizarSenhaAdm', () => {
   test('Deve retornar mensagem de sucesso', async () => {
-    mockAdmModel.buscarADM.mockResolvedValue({ id: 8, login: mockAdm.login });
+    mockAdmModel.buscarAdm.mockResolvedValue({ id: 8, login: mockAdm.login });
     mockAdmModel.alterarSenhaAdm.mockResolvedValue(1);
 
     const result = await masterService.atualizarSenhaAdm(
@@ -157,7 +157,7 @@ describe('Testes do masterService.atualizarSenhaAdm', () => {
   });
 
   test('Deve lançar AppError se adm não existir', async () => {
-    mockAdmModel.buscarADM.mockResolvedValue(null);
+    mockAdmModel.buscarAdm.mockResolvedValue(null);
 
     await expect(
       masterService.atualizarSenhaAdm(
@@ -175,7 +175,7 @@ describe('Testes do masterService.atualizarSenhaAdm', () => {
   });
 
   test('Deve lançar AppError se a senha não for alterada', async () => {
-    mockAdmModel.buscarADM.mockResolvedValue({ id: 8, login: mockAdm.login });
+    mockAdmModel.buscarAdm.mockResolvedValue({ id: 8, login: mockAdm.login });
     mockAdmModel.alterarSenhaAdm.mockResolvedValue(0);
 
     await expect(
@@ -194,7 +194,7 @@ describe('Testes do masterService.atualizarSenhaAdm', () => {
   });
 
   test('Valida que os erros de regra são AppError', async () => {
-    mockAdmModel.buscarADM.mockResolvedValue(null);
+    mockAdmModel.buscarAdm.mockResolvedValue(null);
 
     await expect(
       masterService.atualizarSenhaAdm(
