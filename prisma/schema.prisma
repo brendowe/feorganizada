@@ -1,0 +1,140 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Igreja {
+  id        Int                 @id @default(autoincrement())
+  nome      String              @db.VarChar(100)
+  url       String              @unique @db.VarChar(20)
+
+  telefones IgrejaTelefone[]
+  endereco  IgrejaEndereco?
+  membros   Membro[]
+  ministerios Ministerio[]
+  admins    MembroAdm[]
+  masters   MembroMaster[]
+
+  @@map("igreja")
+}
+
+model IgrejaTelefone {
+  id         Int     @id @default(autoincrement())
+  telefone   String  @db.Char(15)
+
+  igrejaId   Int     @map("igreja_id")
+  igreja     Igreja  @relation(fields: [igrejaId], references: [id], onDelete: Cascade)
+
+  @@map("igreja_telefone")
+}
+
+model IgrejaEndereco {
+  id           Int     @id @default(autoincrement())
+  estado       String  @db.VarChar(50)
+  cidade       String  @db.VarChar(50)
+  bairro       String  @db.VarChar(50)
+  rua          String  @db.VarChar(150)
+  complemento  String? @db.VarChar(50)
+
+  igrejaId     Int     @unique @map("igreja_id")
+  igreja       Igreja  @relation(fields: [igrejaId], references: [id], onDelete: Cascade)
+
+  @@map("igreja_endereco")
+}
+
+model Membro {
+  id           Int     @id @default(autoincrement())
+  nome         String  @db.VarChar(200)
+  nascimento   DateTime
+
+  igrejaId     Int     @map("igreja_id")
+  igreja       Igreja  @relation(fields: [igrejaId], references: [id], onDelete: Cascade)
+
+  endereco     MembroEndereco?
+  telefones    MembroTelefone[]
+  ministerios  MinisterioMembro[]
+  adm          MembroAdm?
+  master       MembroMaster?
+
+  @@map("membro")
+}
+
+model MembroEndereco {
+  id           Int     @id @default(autoincrement())
+  estado       String  @db.VarChar(50)
+  cidade       String  @db.VarChar(50)
+  bairro       String  @db.VarChar(50)
+  rua          String  @db.VarChar(150)
+  complemento  String? @db.VarChar(50)
+
+  membroId     Int     @unique @map("membro_id")
+  membro       Membro  @relation(fields: [membroId], references: [id], onDelete: Cascade)
+
+  @@map("membro_endereco")
+}
+
+model MembroTelefone {
+  id        Int     @id @default(autoincrement())
+  telefone  String  @db.Char(15)
+
+  membroId  Int     @map("membro_id")
+  membro    Membro  @relation(fields: [membroId], references: [id], onDelete: Cascade)
+
+  @@map("membro_telefone")
+}
+
+model MembroAdm {
+  id         Int     @id @default(autoincrement())
+  login      String  @db.VarChar(20)
+  senha      String  @db.VarChar(100)
+
+  membroId   Int     @unique @map("membro_id")
+  igrejaId   Int     @map("igreja_id")
+
+  membro     Membro  @relation(fields: [membroId], references: [id], onDelete: Cascade)
+  igreja     Igreja  @relation(fields: [igrejaId], references: [id], onDelete: Cascade)
+
+  @@map("membro_adm")
+}
+
+model MembroMaster {
+  id         Int     @id @default(autoincrement())
+  login      String  @db.VarChar(20)
+  senha      String  @db.VarChar(100)
+  email      String  @unique @db.VarChar(50)
+
+  membroId   Int     @unique @map("membro_id")
+  igrejaId   Int     @unique @map("igreja_id")
+
+  membro     Membro  @relation(fields: [membroId], references: [id], onDelete: Cascade)
+  igreja     Igreja  @relation(fields: [igrejaId], references: [id], onDelete: Cascade)
+
+  @@map("membro_master")
+}
+
+model Ministerio {
+  id         Int     @id @default(autoincrement())
+  nome       String  @db.VarChar(25)
+
+  igrejaId   Int     @map("igreja_id")
+  igreja     Igreja  @relation(fields: [igrejaId], references: [id], onDelete: Cascade)
+
+  membros    MinisterioMembro[]
+
+  @@unique([igrejaId, nome])
+  @@map("ministerio")
+}
+
+model MinisterioMembro {
+  id             Int     @id @default(autoincrement())
+  funcao         String  @db.VarChar(15)
+
+  ministerioId   Int     @map("ministerio_id")
+  membroId       Int     @map("membro_id")
+
+  ministerio     Ministerio @relation(fields: [ministerioId], references: [id], onDelete: Cascade)
+  membro         Membro     @relation(fields: [membroId], references: [id], onDelete: Cascade)
+
+  @@unique([ministerioId, membroId])
+  @@map("ministerio_membro")
+}

@@ -12,10 +12,11 @@ export default async function masterMiddleware(req, res, next) {
 
     connection = await pool.getConnection();
 
-    const usuarioMaster = await MasterModel.buscarMaster(
+    const masterModel = new MasterModel(connection);
+
+    const usuarioMaster = await masterModel.buscarMaster(
       req.usuario.login,
-      req.usuario.url,
-      connection
+      req.usuario.url
     );
 
     if (!usuarioMaster) {

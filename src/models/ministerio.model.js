@@ -4,7 +4,7 @@ class MinisterioModel {
   }
   async cadastrarMinisterio(nomeMinisterio, igrejaId) {
     const [result] = await this.connection.query(
-      `INSERT INTO ministerios (nome, igreja_id) VALUES (?, ?)`,
+      `INSERT INTO ministerio (nome, igreja_id) VALUES (?, ?)`,
       [nomeMinisterio, igrejaId]
     );
 
@@ -13,7 +13,7 @@ class MinisterioModel {
 
   async buscarMinisterios(igrejaId) {
     const [rows] = await this.connection.query(
-      'SELECT * FROM ministerios WHERE igreja_id = ?',
+      'SELECT * FROM ministerio WHERE igreja_id = ?',
       [igrejaId]
     );
     return rows;
@@ -21,7 +21,7 @@ class MinisterioModel {
 
   async buscarMinisterio(igrejaId, nome) {
     const [row] = await this.connection.query(
-      'SELECT * FROM ministerios WHERE igreja_id = ? AND nome = ?',
+      'SELECT * FROM ministerio WHERE igreja_id = ? AND nome = ?',
       [igrejaId, nome]
     );
 
@@ -30,7 +30,7 @@ class MinisterioModel {
 
   async verificarMinisterioId(igrejaId, ministerioId) {
     const [row] = await this.connection.query(
-      'SELECT 1 FROM ministerios WHERE igreja_id = ? AND id = ?',
+      'SELECT 1 FROM ministerio WHERE igreja_id = ? AND id = ?',
       [igrejaId, ministerioId]
     );
 
@@ -39,7 +39,7 @@ class MinisterioModel {
 
   async verificarMinisterio(igrejaId, nomeMinisterio) {
     const [row] = await this.connection.query(
-      'SELECT 1 FROM ministerios WHERE igreja_id = ? AND nome = ?',
+      'SELECT 1 FROM ministerio WHERE igreja_id = ? AND nome = ?',
       [igrejaId, nomeMinisterio]
     );
 
@@ -55,11 +55,11 @@ class MinisterioModel {
     mm.funcao AS Funcao,
     memb.igreja_id AS idIgreja
 FROM
-    membros memb
+    membro memb
         JOIN
-    ministerios_membros mm ON memb.id = mm.membros_id
+    ministerio_membro mm ON memb.id = mm.membro_id
         JOIN
-    ministerios mini ON mini.id = mm.ministerios_id
+    ministerio mini ON mini.id = mm.ministerio_id
 WHERE
     mini.id = ? AND mini.igreja_id = ?`,
       [ministerioId, igrejaId]
@@ -70,7 +70,7 @@ WHERE
 
   async verificarMembroMinisterio(ministerioId, membroId) {
     const [row] = await this.connection.query(
-      'SELECT 1 FROM ministerios_membros WHERE ministerios_id = ? AND membros_id = ?',
+      'SELECT 1 FROM ministerio_membro WHERE ministerio_id = ? AND membro_id = ?',
       [ministerioId, membroId]
     );
 
@@ -79,7 +79,7 @@ WHERE
 
   async cadastrarMembroMinisterio(ministerioId, membroId, funcao) {
     const [result] = await this.connection.query(
-      `INSERT INTO ministerios_membros (ministerios_id, membros_id, funcao) VALUES (?, ?, ?)`,
+      `INSERT INTO ministerio_membro (ministerio_id, membro_id, funcao) VALUES (?, ?, ?)`,
       [ministerioId, membroId, funcao]
     );
 
@@ -88,7 +88,7 @@ WHERE
 
   async deletarMinisterioMembro(membroId, igrejaId) {
     const [result] = await this.connection.query(
-      'DELETE mm FROM ministerios_membros mm JOIN ministerios m ON mm.ministerios_id = m.id JOIN igreja i ON m.igreja_id = i.id WHERE mm.membros_id = ? AND i.id = ?',
+      'DELETE mm FROM ministerio_membro mm JOIN ministerio m ON mm.ministerio_id = m.id JOIN igreja i ON m.igreja_id = i.id WHERE mm.membro_id = ? AND i.id = ?',
       [membroId, igrejaId]
     );
     return result.affectedRows;

@@ -51,7 +51,7 @@ class Usuarios {
       }
 
       await connection.commit();
-      return 'usuário cadastrado com sucesso';
+      return membroId;
     } catch (error) {
       if (connection) {
         await connection.rollback();

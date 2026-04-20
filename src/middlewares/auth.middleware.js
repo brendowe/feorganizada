@@ -8,14 +8,18 @@ import AppError from '../errors/apperror.js';
 export default async function authMiddleware(req, res, next) {
   let connection;
   try {
-    const headers = req.headers['authorization'];
+    const authorizationHeader = req.headers.authorization;
 
-    if (!headers) {
+    if (!authorizationHeader) {
       throw new AppError('Erro. Cabeçalho não encontrado', 401);
     }
-    const token = headers.split(' ')[1];
 
-    if (!token) {
+    const token = authorizationHeader
+      .replace(/^Bearer\s+/i, '')
+      .replace(/^"|"$/g, '')
+      .trim();
+
+    if (!token || token.toLowerCase() === 'bearer') {
       throw new AppError('Erro. Token não encontrado', 401);
     }
 
@@ -23,15 +27,16 @@ export default async function authMiddleware(req, res, next) {
 
     connection = await pool.getConnection();
 
-    const usuarioAdm = await AdmModel.buscarADM(
+    const admModel = new AdmModel(connection);
+    const masterModel = new MasterModel(connection);
+
+    const usuarioAdm = await admModel.buscarAdm(
       payload.login,
-      payload.url,
-      connection
+      payload.url
     );
-    const usuarioMaster = await MasterModel.buscarMaster(
+    const usuarioMaster = await masterModel.buscarMaster(
       payload.login,
-      payload.url,
-      connection
+      payload.url
     );
 
     const usuario = usuarioAdm || usuarioMaster;

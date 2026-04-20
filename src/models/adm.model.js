@@ -5,7 +5,7 @@ class AdmModel {
 
   async cadastrarAdm(igrejaId, membroId, login, senha) {
     const [result] = await this.connection.query(
-      'INSERT INTO membros_adm (igreja_id, membros_id, login, senha) VALUES (?, ?, ?, ?)',
+      'INSERT INTO membro_adm (igreja_id, membro_id, login, senha) VALUES (?, ?, ?, ?)',
       [igrejaId, membroId, login, senha]
     );
 
@@ -14,7 +14,7 @@ class AdmModel {
 
   async buscarAdm(login, url) {
     const [rows] = await this.connection.query(
-      'SELECT membros_adm.id, membros_adm.login, membros_adm.senha, igreja.url FROM membros_adm JOIN igreja ON igreja.id = membros_adm.igreja_id WHERE membros_adm.login = ? AND igreja.url = ?',
+      'SELECT membro_adm.id, membro_adm.login, membro_adm.senha, igreja.url FROM membro_adm JOIN igreja ON igreja.id = membro_adm.igreja_id WHERE membro_adm.login = ? AND igreja.url = ?',
       [login, url]
     );
 
@@ -23,7 +23,7 @@ class AdmModel {
 
   async verificarAdm(membroId, igrejaId) {
     const [rows] = await this.connection.query(
-      'SELECT membros_adm.id FROM membros_adm WHERE membros_adm.membros_id = ? AND membros_adm.igreja_id = ?',
+      'SELECT membro_adm.id FROM membro_adm WHERE membro_adm.membro_id = ? AND membro_adm.igreja_id = ?',
       [membroId, igrejaId]
     );
 
@@ -32,7 +32,7 @@ class AdmModel {
 
   async alterarSenhaAdm(login, admId, novaSenha) {
     const [result] = await this.connection.query(
-      'UPDATE membros_adm SET senha = ? WHERE membros_adm.login = ? AND membros_adm.id = ?',
+      'UPDATE membro_adm SET senha = ? WHERE membro_adm.login = ? AND membro_adm.id = ?',
       [novaSenha, login, admId]
     );
     return result.affectedRows;

@@ -46,7 +46,9 @@ class MinisteriosService {
       }
       throw error;
     } finally {
-      connection.release();
+      if (connection) {
+        connection.release();
+      }
     }
   }
 

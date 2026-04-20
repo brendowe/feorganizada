@@ -68,7 +68,9 @@ class IgrejaService {
       await connection.commit();
       return igrejaId;
     } catch (error) {
+      if (connection) {
       await connection.rollback();
+      }
       throw error;
     } finally {
       if (connection) {

@@ -8,7 +8,7 @@ class MinisteriosController {
 
       return res.status(201).json({
         message: 'Ministério cadastrado com sucesso',
-        data: await MinisteriosService.cadastrarMinisterio(url, nomeMinisterio),
+        data: await MinisteriosService.cadastrarMinisterio({ url, nomeMinisterio }),
       });
     } catch (error) {
       return next(error);

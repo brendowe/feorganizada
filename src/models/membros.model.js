@@ -4,7 +4,7 @@ class MembrosModel {
   }
   async cadastrarMembro(igrejaId, nome, nascimento) {
     const [result] = await this.connection.query(
-      'INSERT INTO membros (nome, nascimento, igreja_id) VALUES (?, ?, ?)',
+      'INSERT INTO membro (nome, nascimento, igreja_id) VALUES (?, ?, ?)',
       [nome, nascimento, igrejaId]
     );
     return result.insertId;
@@ -12,7 +12,7 @@ class MembrosModel {
 
   async cadastrarEndereco(membrosId, endereco) {
     const [result] = await this.connection.query(
-      'INSERT INTO membros_endereco (estado, cidade, bairro, rua, complemento, membros_id) VALUES (?, ?, ?, ?, ?, ?)',
+      'INSERT INTO membro_endereco (estado, cidade, bairro, rua, complemento, membro_id) VALUES (?, ?, ?, ?, ?, ?)',
       [
         endereco.estado,
         endereco.cidade,
@@ -28,7 +28,7 @@ class MembrosModel {
 
   async cadastrarTelefone(membrosId, telefone) {
     const [result] = await this.connection.query(
-      'INSERT INTO membros_telefone (telefone, membros_id) VALUES (?, ?)',
+      'INSERT INTO membro_telefone (telefone, membro_id) VALUES (?, ?)',
       [telefone, membrosId]
     );
 
@@ -50,13 +50,13 @@ class MembrosModel {
     me.complemento,
     mt.telefone
 FROM
-    membros m
+    membro m
         JOIN
     igreja i ON i.id = m.igreja_id
         JOIN
-    membros_endereco me ON me.membros_id = m.id
+    membro_endereco me ON me.membro_id = m.id
         JOIN
-    membros_telefone mt ON mt.membros_id = m.id
+    membro_telefone mt ON mt.membro_id = m.id
 WHERE
     i.url = ? `,
       [url]
@@ -80,13 +80,13 @@ WHERE
     me.complemento,
     mt.telefone
 FROM
-    membros m
+    membro m
         JOIN
     igreja i ON i.id = m.igreja_id
         JOIN
-    membros_endereco me ON me.membros_id = m.id
+    membro_endereco me ON me.membro_id = m.id
         JOIN
-    membros_telefone mt ON mt.membros_id = m.id
+    membro_telefone mt ON mt.membro_id = m.id
 WHERE
     i.url = ? AND m.id = ?`,
       [url, membroId]
@@ -103,11 +103,11 @@ WHERE
     m.nascimento,
     mt.telefone
 FROM
-    membros m
+    membro m
         JOIN
     igreja i ON i.id = m.igreja_id
         JOIN
-    membros_telefone mt ON mt.membros_id = m.id
+    membro_telefone mt ON mt.membro_id = m.id
 WHERE
     i.url = ? AND MONTH (m.nascimento) = ?`,
       [url, mes]
@@ -118,7 +118,7 @@ WHERE
 
   async deletarMembro(igrejaId, membroId) {
     const [result] = await this.connection.query(
-      `DELETE FROM membros
+      `DELETE FROM membro
 WHERE igreja_id = ? AND id = ?`,
       [igrejaId, membroId]
     );

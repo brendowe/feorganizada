@@ -1,4 +1,4 @@
-import AppError from '../errors/apperror';
+import AppError from '../errors/apperror.js';
 
 const validateMiddleware = (schema, property = 'body') => {
   return (req, res, next) => {

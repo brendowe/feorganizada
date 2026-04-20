@@ -31,7 +31,7 @@ class AuthService {
   }
 
   async buscarUsuario(login, url, admModel, masterModel) {
-    const usuarioAdm = await admModel.buscarADM(login, url);
+    const usuarioAdm = await admModel.buscarAdm(login, url);
     const usuarioMaster = await masterModel.buscarMaster(login, url);
 
     if (!usuarioAdm && !usuarioMaster) {

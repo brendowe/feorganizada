@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import {urlSchema } from './url.Validator.js';
+import { urlSchema } from './url.validator.js';
 
 export const cadastrarMembroSchema = Joi.object({
   nome: Joi.string().min(6).max(200).required(),

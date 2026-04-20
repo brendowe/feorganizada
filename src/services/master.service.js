@@ -16,7 +16,7 @@ class MasterService {
 
       await connection.beginTransaction();
 
-      const admCadastrado = await admModel.buscarADM(login, url);
+      const admCadastrado = await admModel.buscarAdm(login, url);
 
       if (admCadastrado) {
         throw new AppError('Usuário já é adm', 409);
@@ -55,7 +55,7 @@ class MasterService {
 
       const admModel = new AdmModel(connection);
 
-      const admCadastrado = await admModel.buscarADM(login, url);
+      const admCadastrado = await admModel.buscarAdm(login, url);
 
       if (!admCadastrado) {
         throw new AppError('Adm não cadastrado', 404);
