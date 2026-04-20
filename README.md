@@ -1,6 +1,5 @@
 # Fé Organizada
 
-Back-end do projeto para gerenciamento de igrejas.
 O objetivo é facilitar a organização de membros, eventos, ministérios e outros serviços oferecendo uma base sólida para futuras integrações com o front-end.
 
 ## Estrutura do projeto
@@ -8,6 +7,10 @@ O objetivo é facilitar a organização de membros, eventos, ministérios e outr
 ```text
 feorganizada/
 ├── postman/
+├── prisma/
+│   ├── migrations/
+│   ├── schema.prisma
+│   └── prisma.config.ts
 ├── public/
 │   ├── sql/
 ├── src/
@@ -16,10 +19,15 @@ feorganizada/
 │   ├── services/
 │   ├── routes/
 │   ├── middlewares/
+│   ├── models/
+│   ├── validators/
 │   ├── utils/
 │   ├── app.js
 │   └── server.js
 ├── tests/
+│   └── unit/
+│       ├── models/
+│       └── services/
 ├── .env
 ├── .editorconfig
 ├── .eslintrc.json
@@ -35,69 +43,111 @@ feorganizada/
 ## Tecnologias usadas
 
 ### Back-end
+
 - Node.js
 - Express
 - MySQL
 - MySQL2
 - Bcrypt
-- JWT
+- JWT (jsonwebtoken)
 - Jest
 - Cors
 - Helmet
 - Nodemon
 - Sucrase
+- Prisma ORM
+- Swagger-UI-Express
+- Swagger-JSDoc
+- Joi (validação)
 
-## Configuração de variáveis de ambiente
-
-O back-end precisa de um arquivo .env na pasta raiz com as informações sensíveis.
-
-`PORT=3000`
-`SALTROUNDS=12`
-`SECRET_KEY='Sua chave secreta'`
-`HOST='Seu Host'`
-`USER='Seu usuário'`
-`PASSWORD='Sua senha'`
-`DATABASE='feorganizada'`
 
 ## Como rodar o projeto
 
 ### Faça uma cópia do projeto
+
 #### Clonar via Git
+
 `git clone https://github.com/brendowe/feorganizada.git`
+
 #### Ou baixar o zip
+
 - Clique em Code
 - Download ZIP no GitHub
 - Extraia o arquivo em uma pasta na sua máquina
 
 ### Back-end
+
 #### Abra o terminal e navegue até a pasta do projeto:
+
 `cd feorganizada`
+
 #### Instale as dependências
+
 `npm install`
+
+#### Configure as variáveis de ambiente
+
+O back-end precisa de um arquivo .env na pasta raiz com as informações sensíveis.
+
+```env
+PORT=3000
+SALTROUNDS=12
+SECRET_KEY='Sua chave secreta'
+DATABASE_URL='mysql://usuario:senha@host:3306/feorganizada'
+```
+
+#### Banco de Dados (Prisma)
+
+##### Usar migrations Prisma
+
+```bash
+npx prisma migrate dev --name init
+```
+
 #### Rode o servidor
-`npm start`
+
+`npm run dev` (desenvolvimento com nodemon)
+ou
+`npm start` (produção)
+
 O servidor estará disponível em `http://localhost:3000/api`
 
-### Banco de Dados
+## Documentação da API
 
-#### Você irá precisar do MySQL
-`https://www.mysql.com/`
-#### Estrutura do banco
-Na raiz do projeto dentro da pasta `public/sql` terá um arquivo chamado `feorganizada_structure.sql`
-Importe ele em seu projeto para utilizar a estrutura
+### Acesso ao Swagger
+
+1. Abra `http://localhost:3000/api-docs` no navegador
+2. Todos os endpoints aparecem com:
+   - Descrição detalhada
+   - Parâmetros documentados
+   - Exemplos pré-preenchidos de payload
+   - Respostas esperadas
+
+### Fluxo de Autenticação no Swagger
+
+1. **Faça Login**
+   - Abra a rota `POST /{url}/login`
+   - Preencha os campos (exemplos pré-preenchidos)
+   - Execute a requisição
+   - O token é capturado automaticamente
+
+2. **Autorize as Rotas Protegidas**
+   - O token é salvo e utilizado automaticamente
+   - Nenhuma necessidade de copiar/colar manualmente
+   - Todas as rotas com cadeado (🔒) enviam o JWT automaticamente
 
 ### Endpoints
-Todos os endereços podem ser acessados acessado em `http://localhost:3000/api/endpoint`
+
+Todos os endereços podem ser acessados em `http://localhost:3000/api/endpoint`
 
 #### <mark>Autenticação
 
-| Método | Endpoint | Descrição |
-|------|---------|-----------|
-| POST | `/auth/cadastro` | Cadastro inicial da igreja e usuário master |
-| POST | `/auth/:url/login` | Login do usuário vinculado à igreja |
+| Método | Endpoint      | Descrição                                   | Autenticação |
+| ------ | ------------- | ------------------------------------------- | ------------ |
+| POST   | `/igrejas`    | Cadastro inicial da igreja e usuário master | Não          |
+| POST   | `/:url/login` | Login do usuário vinculado à igreja         | Não          |
 
-
-O back-end espera um arquivo json dessa maneira para o cadastro
+##### Exemplo de cadastro de Igreja (POST `/igrejas`)
 
 ```json
 {
@@ -124,64 +174,69 @@ O back-end espera um arquivo json dessa maneira para o cadastro
   "master": {
     "login": "carlossilva",
     "senha": "senhaSegura123",
-    "email": "carlossilva@email.com"
+    "email": "carlossilva@gmail.com"
   }
 }
 ```
-#### A URL e o EMAIL do master são os identificadores únicos. Caso já estejam cadastrados você verá algo assim
-`"A url esperanca-viva-sp já está em uso"` ou `"O email carlossilva@email.com já está em uso"`
-#### Se tudo estiver ok verá essa mensagem
-`"Igreja cadastrada com sucesso"`
+
+**Observações:**
+
+- A URL e o EMAIL do master são identificadores únicos
+- Se já estiverem cadastrados, você receberá um erro 409 (Conflict)
+- Exemplos pré-preenchidos estão disponíveis no Swagger
 
 #### <mark>Administração (Master)
 
-| Método | Endpoint | Descrição |
-|------|---------|-----------|
-| POST | `/master/adm/:url` | Cadastro de administrador vinculado à igreja |
-| PATCH | `/master/:url/adm/:login` | Atualizar senha de administrador |
+| Método | Endpoint           | Descrição                                    | Autenticação  |
+| ------ | ------------------ | -------------------------------------------- | ------------- |
+| POST   | `/:url/adm/:id`    | Cadastro de administrador vinculado à igreja | JWT ⚠️ Master |
+| PATCH  | `/:url/adm/:login` | Atualizar senha de administrador             | JWT ⚠️ Master |
 
----
+**Observações:**
 
-
-- Endpoints protegidos por **JWT**
-- Apenas o usuário **master** têm permissão de acesso
+- Apenas usuário **master** pode acessar
+- Requer token JWT válido no header `Authorization: Bearer <token>`
 
 #### <mark>Ministérios
 
-| Método | Endpoint | Descrição |
-|------|---------|-----------|
-| POST | `/:url/ministerios` | Cadastro de ministério |
-| GET | `/:url/ministerios` | Listar ministérios da igreja |
-| POST | `/:url/ministerios/:ministerioId` | Vincular membro a um ministério |
-| GET | `/:url/ministerios/:ministerioId` | Listar membros de um ministério |
+| Método | Endpoint                          | Descrição                       | Autenticação |
+| ------ | --------------------------------- | ------------------------------- | ------------ |
+| GET    | `/:url/ministerios`               | Listar ministérios da igreja    | JWT          |
+| POST   | `/:url/ministerios`               | Cadastro de ministério          | JWT          |
+| GET    | `/:url/ministerios/:ministerioId` | Listar membros de um ministério | JWT          |
+| POST   | `/:url/ministerios/:ministerioId` | Vincular membro a um ministério | JWT          |
 
----
+**Observações:**
 
-- Todos os endpoints exigem **JWT**
+- Todos os endpoints exigem **JWT** válido
+- Exemplos de payload pré-preenchidos no Swagger
 
 #### <mark>Membros
 
-| Método | Endpoint | Descrição |
-|------|---------|-----------|
-| POST | `/:url/membros` | Cadastro de membro |
-| GET | `/:url/membros` | Listar membros da igreja |
-| GET | `/:url/membros/:id` | Buscar membro por ID |
-| GET | `/:url/aniversariantes/:mes` | Listar aniversariantes por mês |
+| Método | Endpoint                     | Descrição                             | Autenticação |
+| ------ | ---------------------------- | ------------------------------------- | ------------ |
+| GET    | `/:url/membros`              | Listar membros da igreja              | JWT          |
+| POST   | `/:url/membros`              | Cadastro de membro                    | JWT          |
+| GET    | `/:url/membros/:id`          | Buscar membro por ID                  | JWT          |
+| GET    | `/:url/aniversariantes/:mes` | Listar aniversariantes por mês (1-12) | JWT          |
+| DELETE | `/:url/membros/:id`          | Deletar membro                        | JWT          |
 
----
+**Observações:**
 
-- Todos os endpoints exigem **JWT**
+- Todos os endpoints exigem **JWT** válido
+- Exemplos de payload pré-preenchidos no Swagger
 
 ## Postman
 
 Este projeto possui uma coleção do Postman com todos os endpoints da API organizados por domínio
 
 ### Importar coleção
+
 1. Abra o Postman
 2. Clique em **Import**
 3. Selecione o arquivo na pasta postman: `fe-organizada.postman_collection.json`
 
-Todas as rotas possuem modelos para cadastrar igreja, membros ou adm.
+Todas as rotas possuem modelos para cadastrar igreja, membros ou administrador.
 
 ## Testes unitários
 
@@ -203,13 +258,53 @@ Para testar basta abrir o terminal do vscode e digitar os seguintes comandos
 
 Basta substituir o admModel.test.js pelo arquivo que deseja rodar
 
+## Prisma - Gerenciamento de Banco de Dados
+
+### Gerar/Atualizar Migrations
+
+```bash
+npx prisma migrate dev --name nome_da_migracao
+```
+
+### Visualizar Dados (Prisma Studio)
+
+```bash
+npx prisma studio
+```
+
+### Validar Schema
+
+```bash
+npx prisma validate
+```
+
+### Importante: Mapeamento de Nomes
+
+O schema usa `@@map()` e `@map()` para manter nomes em snake_case:
+
+- Tabelas: `Igreja`, `IgrejaEndereco` → `igreja`, `igreja_endereco`
+- Colunas: `igrejaId` → `igreja_id`
+
+Isso garante compatibilidade com bancos de dados legados e padrão de nomenclatura SQL.
+
 ## Versões do projeto
 
-### v2.0.1 (atual)
+### v2.1.0 (atual)
+
+- Integração com Swagger/OpenAPI
+- Prisma ORM para migrations
+- Refatoração de todo o código
+- Deletar um membro agora é feito em cascata
+- Removida a dependência constante do connection nos models
+- Validação de dados com JOI
+- Documentação atualizada
+
+### v2.0.1
 
 - Adição de coleção do Postman
 
 ### v2.0.0
+
 - Implementação de autenticação com JWT
 - Adição de endpoints de autenticação, administração, ministérios e membros
 - Refatoração da arquitetura (services/controllers)
@@ -219,20 +314,24 @@ Basta substituir o admModel.test.js pelo arquivo que deseja rodar
 - Implementação de Helmet e CORS
 
 ### v1.0.0
+
 - Endpoint inicial de cadastro de igreja
 - Estrutura inicial do banco de dados
 
-
-
 ## Atualizações futuras
 
-- Introduzir Validação de dados com JOI
-- Novos testes unitários
-- Um front-end para consumir os dados
+- Endpoints para eventos e atividades
+- Black list para JWT
+- Integração com serviços de e-mail
+- Imagem no Docker
+- Front-end para consumir os dados
 
-Se você tem alguma sugestão sinta-se a vontade para comentar ou me enviar uma mensagem. Toda dica é bem-vinda.
 
 ## 💡 Observações
 
 - O foco do projeto é demonstrar habilidades em back-end.
 - Nunca compartilhe o arquivo .env com suas informações privadas no GitHub.
+
+## Contribuições
+
+Se você tem alguma sugestão ou indicação sinta-se a vontade para comentar ou me enviar uma mensagem. Toda dica é bem-vinda.

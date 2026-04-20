@@ -1,35 +1,33 @@
-import masterService from '../services/masterService.js';
+import MasterService from '../services/master.service.js';
 
-class masterController {
-  async cadastarAdm(req, res) {
+class MasterController {
+  async cadastrarAdm(req, res, next) {
     try {
       const { url, id } = req.params;
       const { login, senha } = req.body;
 
-      return res
-        .status(200)
-        .json(await masterService.cadastrarAdm(url, id, login, senha));
-    } catch (error) {
-      res.status(500).json({
-        message: error.message,
+      return res.status(201).json({
+        message: 'Administrador cadastrado com sucesso',
+        data: await MasterService.cadastrarAdm(url, id, login, senha),
       });
+    } catch (error) {
+      return next(error);
     }
   }
 
-  async atualizarSenhaAdm(req, res) {
+  async atualizarSenhaAdm(req, res, next) {
     try {
       const { url, login } = req.params;
-      const { novaSenha } = req.body;
+      const { novaSenha } = req.body; 
 
-      return res
-        .status(200)
-        .json(await masterService.atualizarSenhaAdm(login, url, novaSenha));
-    } catch (error) {
-      res.status(500).json({
-        message: error.message,
+      return res.status(200).json({
+        message: 'Senha atualizada com sucesso.',
+        data: await MasterService.atualizarSenhaAdm(login, url, novaSenha),
       });
+    } catch (error) {
+      next(error);
     }
   }
 }
 
-export default new masterController();
+export default new MasterController();

@@ -1,20 +1,20 @@
-import authService from '../services/authService.js';
+import AuthService from '../services/auth.service.js';
 
-class authController {
-  async login(req, res) {
+class AuthController {
+  async login(req, res, next) {
     try {
       const { url } = req.params;
       const { login, senha } = req.body;
 
-      const token = await authService.login(url, login, senha);
-      return res.json({
-        message: `usuario ${login} logado com sucesso`,
+      const token = await AuthService.login(url, login, senha);
+      return res.status(200).json({
+        message: `usuario logado com sucesso`,
         token,
       });
     } catch (error) {
-      console.error(error);
+      return next(error);
     }
   }
 }
 
-export default new authController();
+export default new AuthController();

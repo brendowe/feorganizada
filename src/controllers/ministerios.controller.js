@@ -1,63 +1,65 @@
-import ministeriosService from '../services/ministeriosService.js';
+import MinisteriosService from '../services/ministerios.service.js';
 
-class ministeriosController {
-  async cadastrarMinisterio(req, res) {
-    const { url } = req.params;
-    const { nomeMinisterio } = req.body;
-    const novoMinisterio = { url, nomeMinisterio };
-
+class MinisteriosController {
+  async cadastrarMinisterio(req, res, next) {
     try {
-      res
-        .status(200)
-        .json(await ministeriosService.cadastrarMinisterio(novoMinisterio));
+      const { url } = req.params;
+      const { nomeMinisterio } = req.body;
+
+      return res.status(201).json({
+        message: 'Ministério cadastrado com sucesso',
+        data: await MinisteriosService.cadastrarMinisterio({ url, nomeMinisterio }),
+      });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return next(error);
     }
   }
 
-  async buscarMinisterios(req, res) {
-    const { url } = req.params;
-
+  async buscarMinisterios(req, res, next) {
     try {
-      res.status(200).json(await ministeriosService.buscarMinisterios(url));
+      const { url } = req.params;
+
+      return res.status(200).json({
+        message: 'Ministérios encontrados com sucesso',
+        data: await MinisteriosService.buscarMinisterios(url),
+      });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return next(error);
     }
   }
 
-  async cadastrarMembroMinisterio(req, res) {
-    const { url, ministerioId } = req.params;
-    const { membroId, funcao } = req.body;
-
+  async cadastrarMembroMinisterio(req, res, next) {
     try {
-      res
-        .status(200)
-        .json(
-          await ministeriosService.cadastrarMembroMinisterio(
-            url,
-            ministerioId,
-            membroId,
-            funcao
-          )
-        );
+      const { url, ministerioId } = req.params;
+      const { membroId, funcao } = req.body;
+
+      return res.status(201).json({
+        message: 'Membro cadastrado no ministério com sucesso',
+        data: await MinisteriosService.cadastrarMembroMinisterio(
+          url,
+          ministerioId,
+          membroId,
+          funcao
+        ),
+      });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return next(error);
     }
   }
 
-  async buscarMembrosMinisterio(req, res) {
-    const { url, ministerioId } = req.params;
-
+  async buscarMembrosMinisterio(req, res, next) {
     try {
-      res
+      const { url, ministerioId } = req.params;
+      return res
         .status(200)
-        .json(
-          await ministeriosService.buscarMembrosMinisterio(ministerioId, url)
-        );
+        .json({
+          message: 'Membros do ministério encontrados com sucesso',
+          data: await MinisteriosService.buscarMembrosMinisterio(ministerioId, url),
+        });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return next(error);
     }
   }
 }
 
-export default new ministeriosController();
+export default new MinisteriosController();

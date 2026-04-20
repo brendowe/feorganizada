@@ -1,45 +1,71 @@
-import usuariosService from '../services/usuariosService.js';
+import UsuariosService from '../services/usuarios.service.js';
 
-class usuariosController {
-  async cadastrarMembro(req, res) {
+class UsuariosController {
+  async cadastrarMembro(req, res, next) {
     try {
       const { url } = req.params;
       const novoMembro = req.body;
 
-      res.json(await usuariosService.cadastrarMembro(url, novoMembro));
+      return res.status(201).json({
+        message: 'Membro cadastrado com sucesso',
+        data: await UsuariosService.cadastrarMembro(url, novoMembro),
+      });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return next(error);
     }
   }
 
-  async buscarMembros(req, res) {
+  async buscarMembros(req, res, next) {
     try {
       const { url } = req.params;
-      res.json(await usuariosService.buscarMembros(url));
+
+      return res.status(200).json({
+        message: 'Membros encontrados',
+        data: await UsuariosService.buscarMembros(url),
+      });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return next(error);
     }
   }
 
-  async buscarMembro(req, res) {
+  async buscarMembro(req, res, next) {
     try {
       const { url, id } = req.params;
 
-      res.json(await usuariosService.buscarMembro(url, id));
+      return res.status(200).json({
+        message: 'Membro encontrado',
+        data: await UsuariosService.buscarMembro(url, id),
+      });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return next(error);
     }
   }
 
-  async buscarAniversariantes(req, res) {
+  async buscarAniversariantes(req, res, next) {
     try {
       const { url, mes } = req.params;
 
-      res.json(await usuariosService.buscarAniversariantes(url, mes));
+      return res.status(200).json({
+        message: 'Aniversariantes encontrados',
+        data: await UsuariosService.buscarAniversariantes(url, mes),
+      });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return next(error);
+    }
+  }
+
+  async deletarMembro(req, res, next) {
+    try {
+      const { url, id } = req.params;
+
+      return res.status(200).json({
+        message: 'Membro deletado com sucesso',
+        data: await UsuariosService.deletarMembro(url, id),
+      });
+    } catch (error) {
+      return next(error);
     }
   }
 }
 
-export default new usuariosController();
+export default new UsuariosController();

@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import masterModel from '../../src/models/masterModel.js';
+import MasterModel from '../../../src/models/master.model.js';
 
 describe('Testes do masterModel', () => {
   describe('Testes do masterModel.cadastrarMaster', () => {
@@ -13,19 +13,18 @@ describe('Testes do masterModel', () => {
         igreja_id: 2,
       };
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([{ insertId: 1 }]),
-      };
+      const mockQuery = jest.fn().mockResolvedValue([{ insertId: 1 }]);
+
+      const masterModel = new MasterModel({ query: mockQuery });
 
       const result = await masterModel.cadastrarMaster(
         mockUser.igreja_id,
         mockUser.membros_id,
-        mockUser,
-        connection
+        mockUser
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
-        'INSERT INTO membros_master (login, senha, email, membros_id, igreja_id) VALUES (?, ?, ?, ?, ?)',
+      expect(mockQuery).toHaveBeenCalledWith(
+        'INSERT INTO membro_master (login, senha, email, membro_id, igreja_id) VALUES (?, ?, ?, ?, ?)',
         [
           mockUser.login,
           mockUser.senha,
@@ -50,17 +49,14 @@ describe('Testes do masterModel', () => {
         igreja_id: 2,
       };
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([[mockUser]]),
-      };
+      const mockQuery = jest.fn().mockResolvedValue([[mockUser]]);
 
-      const result = await masterModel.verificarMaster(
-        'carlossilva@email.com',
-        connection
-      );
+      const masterModel = new MasterModel({ query: mockQuery });
 
-      expect(connection.query).toHaveBeenCalledWith(
-        'SELECT * FROM membros_master WHERE email = ?',
+      const result = await masterModel.verificarMaster('carlossilva@email.com');
+
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT 1 FROM membro_master WHERE email = ? limit 1',
         ['carlossilva@email.com']
       );
 
@@ -68,17 +64,17 @@ describe('Testes do masterModel', () => {
     });
 
     test('Deve retornar false se o e-mail não foi encontrado', async () => {
-      const connection = {
-        query: jest.fn().mockResolvedValue([[]]),
-      };
+
+      const mockQuery = jest.fn().mockResolvedValue([[]]);
+
+      const masterModel = new MasterModel({ query: mockQuery });
 
       const result = await masterModel.verificarMaster(
-        'carlossilva@email.com',
-        connection
+        'carlossilva@email.com'
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
-        'SELECT * FROM membros_master WHERE email = ?',
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT 1 FROM membro_master WHERE email = ? limit 1',
         ['carlossilva@email.com']
       );
 
@@ -94,41 +90,39 @@ describe('Testes do masterModel', () => {
         url: 'esperanca-viva-sp',
       };
 
-      const connection = {
-        query: jest.fn().mockResolvedValue([[mockUser]]),
-      };
+      const mockQuery = jest.fn().mockResolvedValue([[mockUser]]);
+
+      const masterModel = new MasterModel({ query: mockQuery });
 
       const result = await masterModel.buscarMaster(
         'Brendo',
-        'esperanca-viva-sp',
-        connection
+        'esperanca-viva-sp'
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
-        'SELECT login, senha, url from membros_master join igreja on igreja.id = membros_master.igreja_id  where login = ? and url = ?',
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT mm.login, mm.senha, i.url from membro_master mm join igreja i on i.id = mm.igreja_id where mm.login = ? and i.url = ? limit 1',
         ['Brendo', 'esperanca-viva-sp']
       );
 
       expect(result).toEqual(mockUser);
     });
 
-    test('Deve retornar false caso não encontre o usuário Master', async () => {
-      const connection = {
-        query: jest.fn().mockResolvedValue([[]]),
-      };
+    test('Deve retornar null caso não encontre o usuário Master', async () => {
+      const mockQuery = jest.fn().mockResolvedValue([[]]);
+
+      const masterModel = new MasterModel({ query: mockQuery });
 
       const result = await masterModel.buscarMaster(
         'Brendo',
-        'esperanca-viva-sp',
-        connection
+        'esperanca-viva-sp'
       );
 
-      expect(connection.query).toHaveBeenCalledWith(
-        'SELECT login, senha, url from membros_master join igreja on igreja.id = membros_master.igreja_id  where login = ? and url = ?',
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT mm.login, mm.senha, i.url from membro_master mm join igreja i on i.id = mm.igreja_id where mm.login = ? and i.url = ? limit 1',
         ['Brendo', 'esperanca-viva-sp']
       );
 
-      expect(result).toBe(false);
+      expect(result).toBe(null);
     });
   });
 });
