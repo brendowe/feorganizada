@@ -93,6 +93,10 @@ O back-end precisa de um arquivo .env na pasta raiz com as informações sensív
 PORT=3000
 SALTROUNDS=12
 SECRET_KEY='Sua chave secreta'
+DB_HOST='endereço do host'
+DB_USER='nome de usuário no banco'
+PASSWORD='senha'
+DATABASE='nome do banco'
 DATABASE_URL='mysql://usuario:senha@host:3306/feorganizada'
 ```
 
